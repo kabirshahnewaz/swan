@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swan · Reddit Intelligence Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F6F2EC;
+  --card: #FFFFFF;
+  --line: #EBE4D9;
+  --line2: #E0D7C8;
+  --ink: #211D18;
+  --muted: #8C8275;
+  --faint: #B5AC9E;
+  --swan: #C75B39;
+  --swan-soft: #F3E2D9;
+  --swan-tint: #FBF1EB;
+  --pos: #3F9D6B;
+  --pos-soft: #E3F1E9;
+  --neu: #D8D1C5;
+  --neg: #CB5346;
+  --neg-soft: #F6E2DF;
+  --blue: #2A66F6;
+  --gold: #D4900A;
+  --shadow: 0 1px 2px rgba(40,30,20,.04), 0 6px 22px rgba(40,30,20,.05);
+  --radius: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+a { color: inherit; text-decoration: none; }
+
+/* ── Header ── */
+header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(246,242,236,.9);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 1160px; margin: 0 auto;
+  padding: 14px 24px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.brand {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 800; font-size: 17px; letter-spacing: -.02em;
+}
+.brand svg { width: 24px; height: 24px; }
+.badge {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--swan);
+  background: var(--swan-soft); border: 1px solid #EAD0C4;
+  padding: 3px 9px; border-radius: 999px;
+}
+.meta { margin-left: auto; font-size: 12.5px; color: var(--muted); }
+.meta b { color: var(--ink); }
+
+/* ── Main ── */
+main { max-width: 1160px; margin: 0 auto; padding: 0 24px 96px; }
+
+/* ── Hero ── */
+.hero { padding: 48px 0 36px; }
+.eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--swan); margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800; letter-spacing: -.04em; line-height: 1.1;
+  margin-bottom: 12px;
+}
+.hero p {
+  font-size: 16px; color: var(--muted); max-width: 580px; line-height: 1.6;
+}
+
+/* ── Corpus stats strip ── */
+.corpus-strip {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 10px; margin: 32px 0;
+}
+.cstat {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; box-shadow: var(--shadow);
+  padding: 18px 16px;
+}
+.cstat .k {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+}
+.cstat .v {
+  font-family: 'JetBrains Mono'; font-weight: 700;
+  font-size: 28px; letter-spacing: -.04em; line-height: 1;
+}
+.cstat .d { font-size: 11.5px; color: var(--faint); margin-top: 6px; }
+.cstat.accent { background: linear-gradient(140deg, #fff, var(--swan-tint)); border-color: #EAD6CB; }
+.cstat.accent .v { color: var(--swan); }
+
+/* ── Section label ── */
+.sec-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--faint);
+  padding: 32px 0 12px;
+  border-top: 1px solid var(--line2);
+}
+
+/* ── Report grid ── */
+.reports { display: grid; gap: 16px; }
+
+/* ── Report card base ── */
+.rcard {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  overflow: hidden;
+  display: grid; grid-template-columns: 280px 1fr;
+}
+.rcard-left {
+  border-right: 1px solid var(--line);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative;
+}
+.rcard-left .num {
+  font-family: 'JetBrains Mono'; font-size: 11px; font-weight: 700;
+  color: var(--faint); letter-spacing: .06em;
+}
+.rcard-left h2 {
+  font-size: 17px; font-weight: 800; letter-spacing: -.02em;
+  line-height: 1.25;
+}
+.rcard-left .desc {
+  font-size: 13px; color: var(--muted); line-height: 1.55; flex: 1;
+}
+.rcard-left .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .05em;
+  padding: 3px 8px; border-radius: 6px; border: 1px solid;
+}
+.tag-swan { color: var(--swan); background: var(--swan-tint); border-color: #EAD6CB; }
+.tag-blue { color: var(--blue); background: #EBF1FF; border-color: #C2D2FC; }
+.tag-pos  { color: var(--pos);  background: var(--pos-soft); border-color: #B8DCC9; }
+.tag-gold { color: var(--gold); background: #FEF6E0; border-color: #F0D889; }
+
+.rcard-right { padding: 22px 24px; }
+
+/* ── Right panel sub-layouts ── */
+.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; height: 100%; }
+.insight-block {
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px 16px;
+}
+.insight-block .ib-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.insight-block .ib-value {
+  font-family: 'JetBrains Mono'; font-weight: 700;
+  font-size: 22px; letter-spacing: -.03em; color: var(--ink);
+}
+.insight-block.accent { background: var(--swan-tint); border-color: #EAD6CB; }
+.insight-block.accent .ib-value { color: var(--swan); }
+.insight-block .ib-note { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+
+/* Tool bars */
+.tool-list { display: flex; flex-direction: column; gap: 7px; }
+.tool-row { display: flex; align-items: center; gap: 10px; }
+.tool-row .tn { font-size: 12.5px; font-weight: 600; width: 72px; flex-shrink: 0; }
+.tool-track { flex: 1; height: 18px; background: var(--bg); border-radius: 5px; overflow: hidden; border: 1px solid var(--line); }
+.tool-fill { height: 100%; border-radius: 5px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; }
+.tool-fill span { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.9); font-family: 'JetBrains Mono'; }
+.tool-row .tc { font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; color: var(--muted); width: 28px; text-align: right; }
+
+/* Sentiment bar */
+.sent-bar {
+  height: 22px; border-radius: 7px; overflow: hidden;
+  display: flex; margin-bottom: 8px; border: 1px solid var(--line);
+}
+.sent-bar i { height: 100%; display: flex; align-items: center; justify-content: center; font-style: normal; }
+.s-pos { background: var(--pos); }
+.s-neu { background: var(--neu); }
+.s-neg { background: var(--neg); }
+.sent-legend { display: flex; gap: 14px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+.sent-legend span { display: flex; align-items: center; gap: 5px; }
+.sent-legend i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; font-style: normal; }
+
+/* Pain bars */
+.pain-list { display: flex; flex-direction: column; gap: 7px; margin-top: 10px; }
+.pain-row { display: grid; grid-template-columns: 88px 1fr 36px; align-items: center; gap: 8px; }
+.pain-row .pl { font-size: 12px; font-weight: 600; }
+.pain-track { height: 14px; background: var(--neg-soft); border-radius: 4px; overflow: hidden; }
+.pain-fill { height: 100%; background: var(--neg); border-radius: 4px; }
+.pain-row .pc { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 11.5px; color: var(--muted); text-align: right; }
+
+/* Quote callout */
+.quote-block {
+  background: var(--swan-tint); border-left: 3px solid var(--swan);
+  border-radius: 0 9px 9px 0; padding: 12px 14px;
+  font-size: 12.5px; line-height: 1.55; color: var(--ink);
+  font-style: italic;
+}
+.quote-block .qsrc { font-style: normal; font-size: 10.5px; font-weight: 700; color: var(--muted); margin-top: 6px; letter-spacing: .04em; text-transform: uppercase; }
+
+/* Sub tiers */
+.tier-list { display: flex; flex-direction: column; gap: 8px; }
+.tier-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px;
+}
+.tier-badge {
+  font-size: 9.5px; font-weight: 800; letter-spacing: .07em;
+  text-transform: uppercase; padding: 3px 7px; border-radius: 5px;
+  white-space: nowrap; flex-shrink: 0; margin-top: 1px;
+}
+.t1 { background: #FDECEA; color: var(--neg); }
+.t2 { background: #FEF6E0; color: var(--gold); }
+.t3 { background: var(--pos-soft); color: var(--pos); }
+.tier-name { font-size: 13px; font-weight: 700; }
+.tier-note { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+/* Role list */
+.role-list { display: flex; flex-direction: column; gap: 8px; }
+.role-row {
+  display: grid; grid-template-columns: 120px 1fr;
+  gap: 10px; align-items: center;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px;
+}
+.role-name { font-size: 13px; font-weight: 700; }
+.role-note { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+/* Use case chips */
+.uc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.uc-card {
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 11px 13px;
+}
+.uc-card .uc-name { font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+.uc-card .uc-stat { font-family: 'JetBrains Mono'; font-size: 11px; font-weight: 700; color: var(--swan); }
+.uc-card .uc-note { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* Post list */
+.post-list { display: flex; flex-direction: column; gap: 8px; }
+.post-row {
+  display: grid; grid-template-columns: 1fr 56px;
+  gap: 10px; align-items: center;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px;
+}
+.post-title { font-size: 12.5px; font-weight: 600; line-height: 1.35; }
+.post-sr { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+.post-votes {
+  font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px;
+  text-align: right; color: var(--swan);
+}
+.post-votes small { display: block; font-size: 9.5px; font-weight: 500; color: var(--faint); }
+
+/* Roadmap items */
+.roadmap-list { display: flex; flex-direction: column; gap: 10px; }
+.rm-row {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 11px 14px;
+}
+.rm-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.rm-head { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.rm-note { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+/* Zero callout */
+.zero-callout {
+  background: linear-gradient(135deg, #fff, var(--swan-tint));
+  border: 1px solid #EAD6CB;
+  border-radius: 11px; padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 14px;
+}
+.zero-n {
+  font-family: 'JetBrains Mono'; font-weight: 700;
+  font-size: 56px; letter-spacing: -.05em; line-height: 1;
+  color: var(--swan); flex-shrink: 0;
+}
+.zero-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.zero-text p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+/* Audience signals */
+.signal-list { display: flex; flex-direction: column; gap: 7px; }
+.signal-row { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; }
+.signal-row .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+/* Co-mention */
+.comention-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cm-card {
+  background: var(--bg); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px;
+}
+.cm-seed { font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.cm-peers { display: flex; gap: 5px; flex-wrap: wrap; }
+.cm-peer {
+  font-size: 11px; font-weight: 600; color: var(--ink);
+  background: var(--card); border: 1px solid var(--line);
+  padding: 2px 7px; border-radius: 5px;
+}
+
+/* Footer */
+footer {
+  max-width: 1160px; margin: 0 auto;
+  padding: 28px 24px 60px;
+  color: var(--faint); font-size: 12px;
+  border-top: 1px solid var(--line); line-height: 1.7;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .rcard { grid-template-columns: 1fr; }
+  .rcard-left { border-right: none; border-bottom: 1px solid var(--line); }
+  .corpus-strip { grid-template-columns: repeat(3, 1fr); }
+  .insight-grid, .uc-grid, .comention-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .corpus-strip { grid-template-columns: repeat(2, 1fr); }
+  main { padding: 0 14px 80px; }
+  .bar { padding: 12px 14px; }
+  .hero h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M5 19c0-5 3-9 8-9 0 0-2-2-2-4 3 0 6 2 6 6 0 5-4 9-9 9-2 0-4-1-4-1s1-1 1-1z" fill="#211D18"/>
+        <circle cx="15.4" cy="10.2" r=".9" fill="#fff"/>
+        <path d="M5 20h14" stroke="#C75B39" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      Swan
+    </div>
+    <span class="badge">Reddit Intelligence Suite</span>
+    <span class="meta">7 reports · <b>667 threads</b> · <b>7,384 comments</b> · <b>49 tools</b></span>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#C75B39"/><circle cx="6" cy="6" r="2" fill="#C75B39"/></svg>
+      Intelligence Overview
+    </div>
+    <h1>The complete picture of<br>Swan's Reddit opportunity</h1>
+    <p>Seven inter-linked analyses covering competitor share of voice, audience psychology, subreddit priority, use case demand, role intelligence, top posts, and a go-to-market roadmap — all from real buyer conversations.</p>
+  </div>
+
+  <!-- CORPUS STATS -->
+  <div class="corpus-strip">
+    <div class="cstat accent">
+      <div class="k">Swan mentions</div>
+      <div class="v mono">0</div>
+      <div class="d">in 667 competitor threads</div>
+    </div>
+    <div class="cstat">
+      <div class="k">Threads scraped</div>
+      <div class="v mono">667</div>
+      <div class="d">2017 – June 2026</div>
+    </div>
+    <div class="cstat">
+      <div class="k">Comments analysed</div>
+      <div class="v mono">7,384</div>
+      <div class="d">with sentiment scoring</div>
+    </div>
+    <div class="cstat">
+      <div class="k">Tools tracked</div>
+      <div class="v mono">49</div>
+      <div class="d">across the GTM stack</div>
+    </div>
+    <div class="cstat">
+      <div class="k">Total tool mentions</div>
+      <div class="v mono">5,570</div>
+      <div class="d">Apollo · Clay · n8n · ZoomInfo</div>
+    </div>
+  </div>
+
+  <!-- SECTION LABEL -->
+  <div class="sec-label">Seven reports — what each one covers</div>
+
+  <div class="reports">
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 1: Competitor Intelligence -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 01</div>
+        <h2>Competitor Intelligence</h2>
+        <div class="desc">
+          Full share-of-voice map across 49 tools. Who owns the conversation, sentiment breakdown for every tool, co-mention clusters, top posts, and the single most important finding: Swan has zero presence in a category being actively discussed.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">Share of Voice</span>
+          <span class="tag tag-blue">Sentiment</span>
+          <span class="tag tag-gold">Co-mentions</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div class="zero-callout">
+          <div class="zero-n">0</div>
+          <div class="zero-text">
+            <h4>Swan mentions across 667 threads</h4>
+            <p>Apollo (319 threads), n8n (259), Clay (253) and ZoomInfo (238) dominate the conversation Swan needs to own.</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 10px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);">Top tools by thread count</div>
+        <div class="tool-list">
+          <div class="tool-row">
+            <div class="tn">Apollo</div>
+            <div class="tool-track"><div class="tool-fill" style="width:100%;background:#1E1E2C"><span>319</span></div></div>
+            <div class="tc">319</div>
+          </div>
+          <div class="tool-row">
+            <div class="tn">n8n</div>
+            <div class="tool-track"><div class="tool-fill" style="width:81%;background:#EA4B71"><span>259</span></div></div>
+            <div class="tc">259</div>
+          </div>
+          <div class="tool-row">
+            <div class="tn">Clay</div>
+            <div class="tool-track"><div class="tool-fill" style="width:79%;background:#2A66F6"><span>253</span></div></div>
+            <div class="tc">253</div>
+          </div>
+          <div class="tool-row">
+            <div class="tn">ZoomInfo</div>
+            <div class="tool-track"><div class="tool-fill" style="width:75%;background:#E0382E"><span>238</span></div></div>
+            <div class="tc">238</div>
+          </div>
+          <div class="tool-row">
+            <div class="tn">HubSpot</div>
+            <div class="tool-track"><div class="tool-fill" style="width:30%;background:#FF7A59"><span>97</span></div></div>
+            <div class="tc">97</div>
+          </div>
+        </div>
+
+        <div style="margin: 14px 0 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);">Overall sentiment — 5,570 mentions</div>
+        <div class="sent-bar">
+          <i class="s-pos" style="width:41%;font-size:10px;font-weight:700;color:rgba(255,255,255,.9)">41% pos</i>
+          <i class="s-neu" style="width:44%;font-size:10px;font-weight:700;color:rgba(0,0,0,.4)">44% neu</i>
+          <i class="s-neg" style="width:15%;font-size:10px;font-weight:700;color:rgba(255,255,255,.9)">15%</i>
+        </div>
+
+        <div style="margin: 14px 0 8px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);">Top buyer pain points</div>
+        <div class="pain-list">
+          <div class="pain-row"><div class="pl">Pricing</div><div class="pain-track"><div class="pain-fill" style="width:100%"></div></div><div class="pc">381</div></div>
+          <div class="pain-row"><div class="pl">Integrations</div><div class="pain-track"><div class="pain-fill" style="width:89%"></div></div><div class="pc">341</div></div>
+          <div class="pain-row"><div class="pl">Data quality</div><div class="pain-track"><div class="pain-fill" style="width:55%"></div></div><div class="pc">211</div></div>
+          <div class="pain-row"><div class="pl">Deliverability</div><div class="pain-track"><div class="pain-fill" style="width:45%"></div></div><div class="pc">171</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 2: Role Intelligence -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 02</div>
+        <h2>Role Intelligence</h2>
+        <div class="desc">
+          What each GTM role — RevOps, Sales Ops, GTM Engineering, Demand Gen, Sales — is asking for, complaining about, and building. Role-specific sentiment, feature requests, and trust gaps mapped to job function.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">RevOps</span>
+          <span class="tag tag-blue">GTM Engineering</span>
+          <span class="tag tag-pos">Sales Ops</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div class="role-list">
+          <div class="role-row">
+            <div>
+              <div class="role-name" style="color:#D4900A">RevOps</div>
+            </div>
+            <div class="role-note">Fixated on workflow complexity, tool sprawl, and ROI proof. Highest need for automated pipeline health and CRM hygiene.</div>
+          </div>
+          <div class="role-row">
+            <div>
+              <div class="role-name" style="color:#2A66F6">GTM Engineering</div>
+            </div>
+            <div class="role-note">Building Clay + n8n + Claude stacks. Want composable, API-first tools they can wire themselves. Most technically sophisticated segment.</div>
+          </div>
+          <div class="role-row">
+            <div>
+              <div class="role-name" style="color:#C75B39">Sales Ops</div>
+            </div>
+            <div class="role-note">Process enforcement, CRM accuracy, rep efficiency. Frustrated by manual reporting and data that lives in silos.</div>
+          </div>
+          <div class="role-row">
+            <div>
+              <div class="role-name" style="color:#3F9D6B">Demand Gen</div>
+            </div>
+            <div class="role-note">Signal-based outbound, intent scoring, content-to-lead playbooks. Fastest-growing topic across all threads.</div>
+          </div>
+          <div class="role-row">
+            <div>
+              <div class="role-name" style="color:#9B59B6">Sales</div>
+            </div>
+            <div class="role-note">Prospect data quality and tool cost. Dominant voice in r/sales and r/Sales_Professionals, focused on what actually books meetings.</div>
+          </div>
+        </div>
+        <div class="quote-block" style="margin-top: 14px;">
+          "n8n - someone personalized 1500+ outreach emails for just $3… makes you wonder about the real value proposition of Clay."
+          <div class="qsrc">r/gtmengineering · GTM Engineer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 3: Subreddit Intelligence Map -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 03</div>
+        <h2>Subreddit Intelligence Map</h2>
+        <div class="desc">
+          Every GTM-relevant subreddit ranked by volume, engagement, relevance, and Swan fit. Five conversation clusters identified with a tiered priority list showing where Swan should build presence first.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">Community Priority</span>
+          <span class="tag tag-blue">Engagement</span>
+          <span class="tag tag-gold">Opportunity Score</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px;">Subreddit priority tiers for Swan</div>
+        <div class="tier-list">
+          <div class="tier-row">
+            <span class="tier-badge t1">Tier 1</span>
+            <div>
+              <div class="tier-name">r/gtmengineering</div>
+              <div class="tier-note">Swan's exact buyer building workflows. 76 threads, 91.8% content relevance. Must-own.</div>
+            </div>
+          </div>
+          <div class="tier-row">
+            <span class="tier-badge t1">Tier 1</span>
+            <div>
+              <div class="tier-name">r/sales · r/SalesOperations</div>
+              <div class="tier-note">High volume, active buyers evaluating data tools. 83 + 7 threads. Price and alternatives dominate.</div>
+            </div>
+          </div>
+          <div class="tier-row">
+            <span class="tier-badge t2">Tier 2</span>
+            <div>
+              <div class="tier-name">r/n8n</div>
+              <div class="tier-note">233 threads, 41.4 avg upvotes — highest engagement. Automation builders who could be Swan power users.</div>
+            </div>
+          </div>
+          <div class="tier-row">
+            <span class="tier-badge t2">Tier 2</span>
+            <div>
+              <div class="tier-name">r/SaaS · r/b2bmarketing</div>
+              <div class="tier-note">Broad GTM audience, 41 and 27 threads. Good for awareness, lower conversion intent.</div>
+            </div>
+          </div>
+          <div class="tier-row">
+            <span class="tier-badge t3">Tier 3</span>
+            <div>
+              <div class="tier-name">r/LeadGeneration · r/revops · r/GrowthHacking</div>
+              <div class="tier-note">Niche but intent-rich communities for specific use cases.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 4: Use Case Market Intelligence -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 04</div>
+        <h2>Use Case Market Intelligence</h2>
+        <div class="desc">
+          Seven GTM use cases dissected: Signal-Based Outbound, Lead Qualification, Meeting Prep, Pipeline Health, Lookalike Outbound, Closed-Lost Analysis, Website Visitors. Who's asking, what's broken, what they want built.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">7 Use Cases</span>
+          <span class="tag tag-blue">Feature Gaps</span>
+          <span class="tag tag-pos">Buyer Intent</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px;">Volume &amp; demand per use case</div>
+        <div class="uc-grid">
+          <div class="uc-card">
+            <div class="uc-name">Signal-Based Outbound</div>
+            <div class="uc-stat">🔥 Highest engagement</div>
+            <div class="uc-note">LinkedIn intent signals, job changes, profile views — buyers want automation on triggers.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">AI Sales Workflow</div>
+            <div class="uc-stat">📈 Fastest growing topic</div>
+            <div class="uc-note">n8n + Clay + Claude stacks. Replacing human SDR tasks with agent workflows.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">Lead Qualification</div>
+            <div class="uc-stat">💸 #1 pain: data quality</div>
+            <div class="uc-note">Buyers drowning in leads with no ICP scoring. Want AI to filter before CRM entry.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">Contact Enrichment</div>
+            <div class="uc-stat">🔁 High feature demand</div>
+            <div class="uc-note">ZoomInfo pricing backlash opening door. Waterfall enrichment becoming standard.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">Meeting Prep</div>
+            <div class="uc-stat">📅 Clear unmet need</div>
+            <div class="uc-note">Reps go in cold. Buyers asking for automated briefs before calls — nobody doing it well.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">Pipeline Health</div>
+            <div class="uc-stat">⚠️ Ops blind spot</div>
+            <div class="uc-note">Stale deals undetected until QBR. RevOps wants proactive alerting, not dashboards.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">Website Visitors</div>
+            <div class="uc-stat">🎯 Emerging signal</div>
+            <div class="uc-note">Deanonymization + ICP match + instant outreach. r/n8n building this from scratch.</div>
+          </div>
+          <div class="uc-card">
+            <div class="uc-name">Closed-Lost Analysis</div>
+            <div class="uc-stat">🔍 Almost no competition</div>
+            <div class="uc-note">Nobody is owning this conversation. Huge white space for Swan to define the category.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 5: Audience Intelligence -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 05</div>
+        <h2>Audience Intelligence</h2>
+        <div class="desc">
+          Deep psychological profile of Swan's three core Reddit segments — r/SalesOperations, r/revops, r/gtmengineering. What they love, what they hate, what language they use, and what would make them share Swan.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">Audience Psychology</span>
+          <span class="tag tag-blue">Vocabulary</span>
+          <span class="tag tag-pos">Emotion Map</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div class="insight-grid">
+          <div class="insight-block">
+            <div class="ib-label">What they love</div>
+            <div class="signal-list">
+              <div class="signal-row"><div class="dot" style="background:var(--pos)"></div>AI automating manual GTM work</div>
+              <div class="signal-row"><div class="dot" style="background:var(--pos)"></div>Signal-based / intent outreach</div>
+              <div class="signal-row"><div class="dot" style="background:var(--pos)"></div>No-code / low-code automation</div>
+              <div class="signal-row"><div class="dot" style="background:var(--pos)"></div>Quick wins with visible ROI</div>
+              <div class="signal-row"><div class="dot" style="background:var(--pos)"></div>Community peer knowledge sharing</div>
+            </div>
+          </div>
+          <div class="insight-block">
+            <div class="ib-label">What they hate</div>
+            <div class="signal-list">
+              <div class="signal-row"><div class="dot" style="background:var(--neg)"></div>CRM data quality problems</div>
+              <div class="signal-row"><div class="dot" style="background:var(--neg)"></div>ZoomInfo pricing &amp; contracts</div>
+              <div class="signal-row"><div class="dot" style="background:var(--neg)"></div>AI hallucinations in GTM flows</div>
+              <div class="signal-row"><div class="dot" style="background:var(--neg)"></div>Manual reporting and spreadsheets</div>
+              <div class="signal-row"><div class="dot" style="background:var(--neg)"></div>AI SDR hype without real results</div>
+            </div>
+          </div>
+          <div class="insight-block">
+            <div class="ib-label">Their emotional state</div>
+            <div class="signal-list">
+              <div class="signal-row"><div class="dot" style="background:#3B9268"></div><b>Excited</b> — AI is changing their job</div>
+              <div class="signal-row"><div class="dot" style="background:#C14040"></div><b>Frustrated</b> — tools overpromise</div>
+              <div class="signal-row"><div class="dot" style="background:#2D6FBF"></div><b>FOMO</b> — missing the automation wave</div>
+              <div class="signal-row"><div class="dot" style="background:#B8732A"></div><b>Skeptical</b> — burned by bad vendors</div>
+            </div>
+          </div>
+          <div class="insight-block accent">
+            <div class="ib-label">Vocabulary that resonates</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+              <span class="tag tag-swan">enrichment</span>
+              <span class="tag tag-swan">waterfall</span>
+              <span class="tag tag-swan">signal-based</span>
+              <span class="tag tag-swan">ICP fit</span>
+              <span class="tag tag-swan">workflow</span>
+              <span class="tag tag-swan">intent</span>
+              <span class="tag tag-swan">outbound</span>
+              <span class="tag tag-swan">pipeline health</span>
+              <span class="tag tag-swan">buying committee</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 6: Reddit Marketing Roadmap -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 06</div>
+        <h2>Reddit Marketing Roadmap</h2>
+        <div class="desc">
+          Actionable playbook for building Swan's Reddit presence. Account structure, content principles, which subreddits to enter first, what to post, and how to move from invisible to referenced.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">Go-to-market</span>
+          <span class="tag tag-blue">Content Strategy</span>
+          <span class="tag tag-gold">Account Structure</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div class="roadmap-list">
+          <div class="rm-row">
+            <div class="rm-icon">🎯</div>
+            <div>
+              <div class="rm-head">North Star — be the tool people mention when asked for alternatives</div>
+              <div class="rm-note">Own the "what else should I use?" moment in GTM threads. The goal is organic mention, not promotion.</div>
+            </div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-icon">🐣</div>
+            <div>
+              <div class="rm-head">Start with r/gtmengineering — Swan's highest-ICP community</div>
+              <div class="rm-note">91.8% content relevance. Begin with value-first commenting on Clay/n8n threads before introducing Swan.</div>
+            </div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-icon">📝</div>
+            <div>
+              <div class="rm-head">Three content types that work: teardowns, templates, honest comparisons</div>
+              <div class="rm-note">"Here's the workflow I built to…" posts drive 200+ upvotes. Benchmarks vs. competitors drive 100+ comments.</div>
+            </div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-icon">⚖️</div>
+            <div>
+              <div class="rm-head">Three principles: value-first, no pitch, community voice</div>
+              <div class="rm-note">Reddit punishes promotional content. Be the helpful expert first; the tool becomes known through association.</div>
+            </div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-icon">🔁</div>
+            <div>
+              <div class="rm-head">Leverage co-mention clusters — Clay, Apollo, n8n appear together</div>
+              <div class="rm-note">73 Clay+n8n co-mentions, 138 Clay+Apollo. Threads comparing these are where Swan should insert itself.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────── -->
+    <!-- REPORT 7: Top Posts Intelligence -->
+    <!-- ─────────────────────────────── -->
+    <div class="rcard">
+      <div class="rcard-left">
+        <div class="num">Report 07</div>
+        <h2>Top Posts Intelligence</h2>
+        <div class="desc">
+          Every high-signal Reddit post ranked by upvotes and comment density. Identifies the exact threads where Swan's ICP is most active, the topics that consistently generate engagement, and the content patterns that get shared.
+        </div>
+        <div class="tags">
+          <span class="tag tag-swan">Viral Posts</span>
+          <span class="tag tag-blue">Topic Trends</span>
+          <span class="tag tag-pos">Content Patterns</span>
+        </div>
+      </div>
+      <div class="rcard-right">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px;">Highest-signal GTM threads</div>
+        <div class="post-list">
+          <div class="post-row">
+            <div>
+              <div class="post-title">I have built n8n automations for a dozen startups this year. Here is what nobody tells you.</div>
+              <div class="post-sr">r/n8n · Feb 2026 · mentions: Claude, Instantly, n8n</div>
+            </div>
+            <div class="post-votes">527<small>upvotes</small></div>
+          </div>
+          <div class="post-row">
+            <div>
+              <div class="post-title">I made $75K selling AI automations to clients. Here's what I'd change if I started over</div>
+              <div class="post-sr">r/AI_Agents · Jun 2026</div>
+            </div>
+            <div class="post-votes">347<small>upvotes</small></div>
+          </div>
+          <div class="post-row">
+            <div>
+              <div class="post-title">How we're personalising cold emails at scale in 2026</div>
+              <div class="post-sr">r/SaaS · Jan 2026</div>
+            </div>
+            <div class="post-votes">359<small>upvotes</small></div>
+          </div>
+          <div class="post-row">
+            <div>
+              <div class="post-title">Zoom Info - users? Any competitors?</div>
+              <div class="post-sr">r/sales · Apr 2024 · 54 comments</div>
+            </div>
+            <div class="post-votes">298<small>upvotes</small></div>
+          </div>
+          <div class="post-row">
+            <div>
+              <div class="post-title">Canceled my $15K/year ZoomInfo subscription. Built my own for $50/month.</div>
+              <div class="post-sr">r/Entrepreneur · Nov 2025 · mentions: Apollo, Clay, n8n</div>
+            </div>
+            <div class="post-votes">148<small>upvotes</small></div>
+          </div>
+          <div class="post-row">
+            <div>
+              <div class="post-title">I fucking hate Zoominfo</div>
+              <div class="post-sr">r/sales · Mar 2023 · 173 comments — highest discussion thread</div>
+            </div>
+            <div class="post-votes">140<small>upvotes</small></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">Key co-mention clusters</div>
+        <div class="comention-grid">
+          <div class="cm-card">
+            <div class="cm-seed">Clay co-mentioned with</div>
+            <div class="cm-peers">
+              <span class="cm-peer">Apollo ×138</span>
+              <span class="cm-peer">n8n ×73</span>
+              <span class="cm-peer">ZoomInfo ×57</span>
+              <span class="cm-peer">Claude ×51</span>
+            </div>
+          </div>
+          <div class="cm-card">
+            <div class="cm-seed">Apollo co-mentioned with</div>
+            <div class="cm-peers">
+              <span class="cm-peer">ZoomInfo ×163</span>
+              <span class="cm-peer">Clay ×138</span>
+              <span class="cm-peer">n8n ×80</span>
+              <span class="cm-peer">Lusha ×68</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /reports -->
+
+</main>
+
+<footer>
+  <b>Swan Reddit Intelligence Suite</b> · 7 reports · 667 threads · 7,384 comments · 49 tools tracked · June 2026<br>
+  Data sourced from r/n8n, r/sales, r/gtmengineering, r/SaaS, r/LeadGeneration, r/b2bmarketing, r/SalesOperations, r/revops and 17+ additional GTM subreddits.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swan · Reddit Top Posts Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F6F2EC;--card:#fff;--line:#EBE4D9;--line2:#E0D7C8;
+  --ink:#211D18;--muted:#8C8275;--faint:#B5AC9E;
+  --swan:#C75B39;--swan-soft:#F3E2D9;--swan-tint:#FBF1EB;
+  --pos:#3F9D6B;--pos-soft:#E3F1E9;
+  --neg:#CB5346;--neg-soft:#F6E2DF;
+  --warn:#D4900A;--warn-soft:#FDF3DC;
+  --blue:#2A66F6;--blue-soft:#E8EFFF;
+  --neu-soft:#EFEBE3;
+  --shadow:0 1px 2px rgba(40,30,20,.04),0 6px 22px rgba(40,30,20,.05);
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+.mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:50;background:rgba(246,242,236,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar{max-width:1220px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.02em}
+.brand svg{width:26px;height:26px}
+.pill{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--swan);background:var(--swan-soft);border:1px solid #EAD0C4;padding:4px 10px;border-radius:999px}
+nav{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap}
+nav a{font-size:12px;font-weight:500;color:var(--muted);padding:6px 9px;border-radius:8px;transition:.15s}
+nav a:hover{color:var(--ink);background:var(--card)}
+nav a.active{color:var(--swan);background:var(--swan-tint);font-weight:600}
+
+/* LAYOUT */
+main{max-width:1220px;margin:0 auto;padding:0 24px 96px}
+section{padding-top:52px;scroll-margin-top:70px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+
+/* TYPOGRAPHY */
+.eyebrow{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--swan);margin-bottom:8px}
+h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:20px;max-width:680px;line-height:1.6}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.panel{padding:22px 24px}
+.panel h3{font-size:14.5px;font-weight:700;margin-bottom:3px}
+.panel .ps{font-size:12px;color:var(--muted);margin-bottom:16px}
+
+/* STAT CARDS */
+.stat{padding:20px 18px}
+.stat .k{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.stat .v{font-family:"JetBrains Mono";font-weight:700;font-size:22px;letter-spacing:-.04em;line-height:1.1}
+.stat .d{font-size:11.5px;color:var(--faint);margin-top:6px;line-height:1.4}
+.stat.accent{background:linear-gradient(150deg,#fff,var(--swan-tint));border-color:#EAD6CB}.stat.accent .v{color:var(--swan)}
+.stat.pos-accent{background:linear-gradient(150deg,#fff,var(--pos-soft));border-color:#C4DDD2}.stat.pos-accent .v{color:var(--pos)}
+.stat.blue-accent{background:linear-gradient(150deg,#fff,var(--blue-soft));border-color:#C0D2FF}.stat.blue-accent .v{color:var(--blue)}
+.stat.warn-accent{background:linear-gradient(150deg,#fff,var(--warn-soft));border-color:#E8D5A0}.stat.warn-accent .v{color:var(--warn)}
+.stat.neg-accent{background:linear-gradient(150deg,#fff,var(--neg-soft));border-color:#E0CCCB}.stat.neg-accent .v{color:var(--neg)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--line2);white-space:nowrap;cursor:pointer;user-select:none}
+.tbl th:hover{color:var(--ink)}
+.tbl th .sort-icon{margin-left:4px;opacity:.4;font-style:normal}
+.tbl th.active .sort-icon{opacity:1;color:var(--swan)}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(199,91,57,.022)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:.05em;padding:3px 8px;border-radius:5px;text-transform:uppercase;white-space:nowrap}
+.b-swan{background:var(--swan-tint);color:var(--swan)}
+.b-pos{background:var(--pos-soft);color:var(--pos)}
+.b-blue{background:var(--blue-soft);color:var(--blue)}
+.b-warn{background:var(--warn-soft);color:var(--warn)}
+.b-neg{background:var(--neg-soft);color:var(--neg)}
+.b-neu{background:var(--neu-soft);color:var(--muted)}
+
+/* SEARCH / FILTER BAR */
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.search-wrap{position:relative;flex:1;min-width:200px}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint)}
+#search{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:13px;font-family:inherit;color:var(--ink);outline:none;transition:.15s}
+#search:focus{border-color:var(--swan);box-shadow:0 0 0 3px rgba(199,91,57,.12)}
+.filter-select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:12px;font-family:inherit;color:var(--ink);outline:none;cursor:pointer}
+.filter-select:focus{border-color:var(--swan)}
+.count-tag{font-size:12px;color:var(--muted);padding:0 4px;white-space:nowrap}
+#reset-btn{padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:.15s}
+#reset-btn:hover{background:var(--card);color:var(--ink)}
+
+/* ENGAGEMENT BARS */
+.eng-bar{display:flex;align-items:center;gap:6px}
+.eng-track{width:60px;height:6px;background:var(--neu-soft);border-radius:3px;overflow:hidden;flex-shrink:0}
+.eng-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#E59070,var(--swan))}
+.eng-val{font-family:"JetBrains Mono";font-size:11px;font-weight:700;color:var(--muted)}
+
+/* SENTIMENT BAR */
+.sent-bar{width:56px;height:6px;border-radius:3px;overflow:hidden;background:var(--neg-soft)}
+.sent-fill{height:100%;background:var(--pos)}
+
+/* TOPIC COLOR DOTS */
+.topic-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;flex-shrink:0}
+
+/* VERDICT CARDS */
+.vcard{border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;background:#fff;margin-bottom:10px}
+.vcard:last-child{margin-bottom:0}
+.vicon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.vbody h4{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.vbody p{font-size:12.5px;color:var(--muted);line-height:1.5}
+
+/* PAGINATION */
+.pag{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12px}
+.pag button{padding:5px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-family:inherit;font-size:12px;cursor:pointer;color:var(--muted)}
+.pag button:hover:not(:disabled){border-color:var(--swan);color:var(--swan)}
+.pag button:disabled{opacity:.4;cursor:not-allowed}
+.pag button.active{background:var(--swan);color:#fff;border-color:var(--swan)}
+#page-info{color:var(--muted)}
+
+/* CHART CONTAINERS */
+.chart-wrap{position:relative;width:100%}
+
+/* TOPIC PILL LIST */
+.topic-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.topic-row:last-child{border-bottom:none}
+.topic-name{font-size:13px;font-weight:600;width:200px;flex-shrink:0;display:flex;align-items:center}
+.topic-bar-track{flex:1;height:8px;background:var(--neu-soft);border-radius:4px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:4px}
+.topic-val{font-family:"JetBrains Mono";font-size:11.5px;font-weight:700;color:var(--muted);width:40px;text-align:right}
+.topic-eng{font-family:"JetBrains Mono";font-size:11px;color:var(--faint);width:70px;text-align:right}
+
+/* RANK BADGE */
+.rank{font-family:"JetBrains Mono";font-size:11px;color:var(--faint);width:22px;text-align:right;flex-shrink:0}
+
+/* FOOTER */
+footer{max-width:1220px;margin:0 auto;padding:28px 24px 60px;color:var(--faint);font-size:11.5px;border-top:1px solid var(--line);line-height:1.8}
+footer b{color:var(--muted)}
+
+/* RESPONSIVE */
+@media(max-width:1000px){.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}nav{display:none}}
+@media(max-width:600px){.g5,.g4{grid-template-columns:1fr 1fr}main{padding:0 14px 80px}.bar{padding:12px 14px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 19c0-5 3-9 8-9 0 0-2-2-2-4 3 0 6 2 6 6 0 5-4 9-9 9-2 0-4-1-4-1s1-1 1-1z" fill="#211D18"/><circle cx="15.4" cy="10.2" r=".9" fill="#fff"/><path d="M5 20h14" stroke="#C75B39" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Swan
+    </div>
+    <span class="pill">Reddit Top Posts</span>
+    <nav id="nav">
+      <a href="#overview">Overview</a>
+      <a href="#posts">Post Table</a>
+      <a href="#topics">By Topic</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#distribution">Distribution</a>
+      <a href="#learnings">Learnings</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════ OVERVIEW -->
+<section id="overview" style="padding-top:40px">
+  <div class="eyebrow">Reddit Intelligence · Top Posts Report</div>
+  <h2>The GTM Conversations That Matter Most</h2>
+  <p class="sub">Top-performing Reddit posts across 16 data categories — AI SDR, GTM Engineering, Signal-Based Outbound, Cold Outreach, Enrichment, RevOps and more. Ranked by engagement and filtered for Swan relevance.</p>
+
+  <div class="grid g5" id="hero-stats"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ POST TABLE -->
+<section id="posts">
+  <div class="eyebrow">Top Posts</div>
+  <h2>Every High-Signal Post, Ranked</h2>
+  <p class="sub">2,908 posts analyzed across 16 topic buckets. Showing the top 300 by engagement score. Search, filter, and sort to find exactly what you need.</p>
+
+  <div class="card" style="overflow:visible">
+    <div class="panel" style="padding-bottom:0">
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input id="search" type="text" placeholder="Search posts…">
+        </div>
+        <select id="filter-topic" class="filter-select">
+          <option value="">All topics</option>
+        </select>
+        <select id="filter-year" class="filter-select">
+          <option value="">All years</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+        <select id="filter-type" class="filter-select">
+          <option value="">All types</option>
+          <option value="Question">Question</option>
+          <option value="Story">Story / Case Study</option>
+          <option value="Resource">Resource / List</option>
+          <option value="Opinion">Opinion / Take</option>
+          <option value="Comparison">Comparison</option>
+        </select>
+        <span class="count-tag" id="count-tag">— posts</span>
+        <button id="reset-btn">Reset</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="tbl" id="posts-tbl">
+        <thead>
+          <tr>
+            <th data-col="rank" style="width:36px"><span>#</span></th>
+            <th data-col="title">Post</th>
+            <th data-col="subreddit">Subreddit</th>
+            <th data-col="topic">Topic</th>
+            <th data-col="type">Type</th>
+            <th data-col="votes">Upvotes <i class="sort-icon">↕</i></th>
+            <th data-col="comments">Comments <i class="sort-icon">↕</i></th>
+            <th data-col="engagement">Engagement <i class="sort-icon">↓</i></th>
+            <th data-col="date">Date <i class="sort-icon">↕</i></th>
+          </tr>
+        </thead>
+        <tbody id="posts-body"></tbody>
+      </table>
+    </div>
+    <div class="panel" style="padding-top:14px;padding-bottom:16px">
+      <div class="pag" id="pag"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ BY TOPIC -->
+<section id="topics">
+  <div class="eyebrow">Topic Breakdown</div>
+  <h2>Which Topics Drive the Most GTM Conversation</h2>
+  <p class="sub">Average engagement score (upvotes + 2× comments) per topic tells us where the audience is most active and where Swan has the best signal.</p>
+
+  <div class="grid g2">
+    <div class="card panel">
+      <h3>Posts per Topic</h3>
+      <p class="ps">Volume of relevant posts found per category</p>
+      <div id="topic-volume-list"></div>
+    </div>
+    <div class="card panel">
+      <h3>Avg Engagement by Topic</h3>
+      <p class="ps">Higher = more upvotes + comments per post</p>
+      <div id="topic-eng-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ TIMELINE -->
+<section id="timeline">
+  <div class="eyebrow">Timeline</div>
+  <h2>How GTM Conversations Have Evolved</h2>
+  <p class="sub">Post volume by year across our core topic clusters. Signals the acceleration of AI-driven GTM content since 2023.</p>
+
+  <div class="grid g2">
+    <div class="card panel" style="grid-column:1/-1">
+      <h3>Total Post Volume by Year (2022–2026)</h3>
+      <p class="ps">Across all 16 Swan-relevant topic buckets</p>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="timeline-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card panel">
+      <h3>Top Topic by Year</h3>
+      <p class="ps">Which category drove the most posts each year</p>
+      <div id="top-topic-year"></div>
+    </div>
+    <div class="card panel">
+      <h3>Engagement Growth</h3>
+      <p class="ps">Average engagement score year-over-year</p>
+      <div class="chart-wrap" style="height:200px">
+        <canvas id="eng-chart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ DISTRIBUTION -->
+<section id="distribution">
+  <div class="eyebrow">Distribution</div>
+  <h2>Post Type &amp; Topic Mix</h2>
+  <p class="sub">Breaking down the 300 highest-engagement posts by content type and topic category — showing where Swan's use cases appear most in the wild.</p>
+
+  <div class="grid g3">
+    <div class="card panel" style="grid-column:1/2">
+      <h3>Topic Share of Top 300</h3>
+      <p class="ps">By number of posts in the top 300</p>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="pie-topic"></canvas>
+      </div>
+    </div>
+    <div class="card panel" style="grid-column:2/4">
+      <h3>Content Type Breakdown</h3>
+      <p class="ps">What kind of posts win on Reddit in the GTM space</p>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="type-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px" id="dist-stats"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ LEARNINGS -->
+<section id="learnings">
+  <div class="eyebrow">Key Learnings</div>
+  <h2>What the Top Posts Tell Us</h2>
+  <p class="sub">Patterns extracted from analyzing the 300 highest-engagement GTM posts on Reddit — what resonates, what falls flat, and how Swan can win attention.</p>
+
+  <div class="grid g2" id="learnings-grid"></div>
+</section>
+
+</main>
+
+<footer>
+  <b>Swan Reddit Intelligence Report</b> · Data from 16 topic CSV exports · 7,376 raw posts analyzed · 2,908 relevant posts (2022–2026) filtered and ranked<br>
+  Report generated July 2026 · Use alongside Subreddit Intelligence Map for full context
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const $$ = s => document.querySelectorAll(s);
+
+const TOPIC_COLORS = {
+  'AI Sales Workflow Automation': '#C75B39',
+  'AI SDR': '#2A66F6',
+  'AI-Powered Cold Outreach': '#D4900A',
+  'GTM Engineering': '#3F9D6B',
+  'RevOps': '#8B5CF6',
+  'Contact Data Enrichment': '#0891B2',
+  'Automated Lead Qualification': '#059669',
+  'Intent-Based Prospecting': '#DC2626',
+  'ZoomInfo': '#7C3AED',
+  'Clay': '#B45309',
+  'N8N': '#1D4ED8',
+  'Signal-Based Outbound': '#BE185D',
+  'Demand Gen': '#047857',
+  'Sales Operations': '#6B7280',
+  'Apollo': '#9333EA',
+  'AI ABM Targeting': '#0369A1',
+};
+
+// Classify post type from title
+function classifyType(title) {
+  const t = title.toLowerCase();
+  if (/\?$|should i|how do|what is|what are|anyone used|anyone know|which |alternatives/.test(t)) return 'Question';
+  if (/i built|i made|i spent|i run|i got|i scraped|i automated|i created|i canceled|i let|i have|here.s what|here.s how|my first|my honest|case study/.test(t)) return 'Story';
+  if (/\d{2,}\+|best |top |guide|list of|ultimate|resources/.test(t)) return 'Resource';
+  if (/truth|biggest lie|stop building|hate |wrong|overrated|overhyped|nobody tells|hot takes|opinion|honest/.test(t)) return 'Opinion';
+  if (/ vs |versus|alternative|compare|instead of|switched|better than/.test(t)) return 'Comparison';
+  return 'Story';
+}
+
+const RAW = [
+  // ── TOP 50 posts with all data ──
+  {title:"Stop building AI agents.",sr:"AI_Agents",votes:1598,comments:395,date:"2026-05-11",topic:"AI Sales Workflow Automation"},
+  {title:"I run an AI automation agency (AAA). My honest overview and review of this new business model",sr:"Entrepreneur",votes:1668,comments:297,date:"2023-10-10",topic:"AI Sales Workflow Automation"},
+  {title:"I scraped every AI automation job posted on Upwork for the last 6 months. Here's what 500+ clients are begging us to build",sr:"AI_Agents",votes:1246,comments:197,date:"2025-06-29",topic:"Automated Lead Qualification"},
+  {title:"I have built n8n automations for a dozen startups this year. Here is what nobody tells you",sr:"n8n",votes:524,comments:119,date:"2026-02-20",topic:"N8N"},
+  {title:"What's the best CRM in 2025 (with full AI features)?",sr:"CRM",votes:195,comments:229,date:"2025-12-05",topic:"Automated Lead Qualification"},
+  {title:"A company just cut their entire 100-person inbound SDR team. Are we overreacting or not reacting enough?",sr:"sales",votes:210,comments:220,date:"2026-03-28",topic:"AI SDR"},
+  {title:"I made $75K selling AI automations to clients. Here's what I'd change if I started over",sr:"AI_Agents",votes:347,comments:151,date:"2026-06-14",topic:"AI Sales Workflow Automation"},
+  {title:"How we're personalising cold emails at scale in 2026",sr:"SaaS",votes:359,comments:90,date:"2026-01-09",topic:"Intent-Based Prospecting"},
+  {title:"The Real AI Agent Roadmap Nobody Talks About",sr:"AI_Agents",votes:411,comments:50,date:"2025-09-04",topic:"AI Sales Workflow Automation"},
+  {title:"I fucking hate Zoominfo",sr:"sales",votes:140,comments:173,date:"2023-03-30",topic:"ZoomInfo"},
+  {title:"How I built & sold my first $1,800 AI Automation to a boutique Law Firm (full deal breakdown)",sr:"n8n",votes:329,comments:78,date:"2025-09-19",topic:"AI Sales Workflow Automation"},
+  {title:'"Validate before building" is the biggest lie in SaaS',sr:"SaaS",votes:203,comments:137,date:"2026-01-20",topic:"Intent-Based Prospecting"},
+  {title:"After automating workflows for 30+ professional services firms, the same 5 tasks show up every time",sr:"AI_Agents",votes:242,comments:102,date:"2026-04-28",topic:"AI Sales Workflow Automation"},
+  {title:"Got my first paying client here is the workflow I built",sr:"n8n",votes:295,comments:71,date:"2025-08-25",topic:"AI Sales Workflow Automation"},
+  {title:"End-to-end Lead Generation system with email personalization and LinkedIn (free template)",sr:"n8n",votes:323,comments:51,date:"2025-07-21",topic:"N8N"},
+  {title:"90% of AI agent projects I get hired for don't need agents at all. Here's what businesses actually need",sr:"AI_Agents",votes:269,comments:69,date:"2026-03-27",topic:"Automated Lead Qualification"},
+  {title:"The truth about B2B marketing...",sr:"marketing",votes:205,comments:99,date:"2023-02-09",topic:"Sales Operations"},
+  {title:"I automated my cold outreach with n8n and now i'm thinking of firing half my sales team",sr:"n8n",votes:255,comments:71,date:"2026-03-02",topic:"AI Sales Workflow Automation"},
+  {title:"Apollo.io alternatives with better data quality in 2026? I switched 3 months ago and here's the rundown",sr:"growmybusiness",votes:302,comments:46,date:"2026-04-19",topic:"Contact Data Enrichment"},
+  {title:"I made a list of 50 practical AI automation ideas",sr:"AiAutomations",votes:67,comments:152,date:"2026-04-26",topic:"AI Sales Workflow Automation"},
+  {title:"Best Zoominfo alternative?",sr:"sales",votes:70,comments:137,date:"2022-01-07",topic:"ZoomInfo"},
+  {title:"65+ AI Agents For Various Use Cases",sr:"AI_Agents",votes:200,comments:66,date:"2025-07-19",topic:"AI Sales Workflow Automation"},
+  {title:"Canceled my $15K/year ZoomInfo subscription. Built my own for $50/month",sr:"Entrepreneur",votes:148,comments:91,date:"2025-11-17",topic:"ZoomInfo"},
+  {title:"Most AI automation is overhyped BS but the stuff that works actually works really well",sr:"automation",votes:224,comments:52,date:"2025-07-10",topic:"AI Sales Workflow Automation"},
+  {title:"How does clay.com works? What are the alternatives?",sr:"Emailmarketing",votes:22,comments:153,date:"2024-03-06",topic:"Clay"},
+  {title:"Do you guys feel Zoominfo is worth the price for mobile numbers and emails vs Seamless.ai, etc?",sr:"sales",votes:38,comments:144,date:"2022-08-20",topic:"ZoomInfo"},
+  {title:"What are your hot takes about working in Demand Gen/Growth Marketing/Digital Marketing that no one talks about?",sr:"marketing",votes:77,comments:120,date:"2023-08-25",topic:"Demand Gen"},
+  {title:"From $800 MRR -> $2,100 MRR in the last 28 days. Here's our marketing playbook",sr:"founder",votes:147,comments:82,date:"2026-05-25",topic:"Signal-Based Outbound"},
+  {title:"I've had multiple clients hire me to build this simple automation. It finds new LinkedIn jobs 24/7 & the hiring managers for every single one",sr:"n8n",votes:515,comments:111,date:"2025-10-21",topic:"Contact Data Enrichment"},
+  {title:"I spent 2 months building a WhatsApp AI sales agent for my family's clothing store. 44 nodes, 2 AI agents, 8 conversation stages.",sr:"n8n",votes:361,comments:123,date:"2026-03-25",topic:"AI Sales Workflow Automation"},
+  {title:"What's the best way to find decision-maker emails without ZoomInfo?",sr:"salesdevelopment",votes:45,comments:145,date:"2024-06-12",topic:"Contact Data Enrichment"},
+  {title:"Is apollo.io really worth it",sr:"SaaS",votes:16,comments:169,date:"2024-02-15",topic:"Apollo"},
+  {title:"I built an AI SDR that books meetings while I sleep — here's the full n8n setup",sr:"n8n",votes:289,comments:55,date:"2026-05-18",topic:"AI SDR"},
+  {title:"The startup I just joined doesn't have 0 demand gen and marketing. How f***** am I?",sr:"sales",votes:56,comments:101,date:"2024-01-13",topic:"Demand Gen"},
+  {title:"Clay vs Apollo for data enrichment — what are you all using in 2025?",sr:"gtmengineering",votes:38,comments:126,date:"2025-08-04",topic:"Clay"},
+  {title:"RevOps Co-Op: it was awesome at first",sr:"revops",votes:35,comments:64,date:"2026-04-07",topic:"RevOps"},
+  {title:"How I use intent signals to book meetings without cold calling",sr:"salesdevelopment",votes:156,comments:63,date:"2026-03-15",topic:"Signal-Based Outbound"},
+  {title:"Alternatives to Clay for data enrichment?",sr:"revops",votes:12,comments:96,date:"2023-07-21",topic:"Clay"},
+  {title:"What creative tactics have helped you break into large accounts?",sr:"sales",votes:111,comments:126,date:"2026-02-27",topic:"GTM Engineering"},
+  {title:"We need a new B2B data provider, what's the best one right now?",sr:"gtmengineering",votes:35,comments:119,date:"2026-05-10",topic:"Contact Data Enrichment"},
+  {title:"Signal-based outbound: sharing what's actually working in 2026",sr:"gtmengineering",votes:134,comments:76,date:"2026-06-03",topic:"Signal-Based Outbound"},
+  {title:"AI SDR tools honest review — what I tried, what stuck, what I dumped",sr:"salesdevelopment",votes:145,comments:63,date:"2026-04-22",topic:"AI SDR"},
+  {title:"I let AI run our Marketing Department for 2 weeks... Our website traffic doubled",sr:"automation",votes:16,comments:57,date:"2026-05-01",topic:"Signal-Based Outbound"},
+  {title:"Built an AI SDR in 45 minutes using Claude, Replit, and Apollo — here's the full setup!",sr:"UseApolloIo",votes:4,comments:2,date:"2026-06-26",topic:"AI SDR"},
+  {title:"RevOps and GTM Engineering: what's the actual difference now?",sr:"gtmengineering",votes:89,comments:66,date:"2025-12-11",topic:"RevOps"},
+  {title:"I built an n8n workflow that qualifies inbound leads automatically — saved 8 hours/week",sr:"n8n",votes:198,comments:44,date:"2026-01-30",topic:"Automated Lead Qualification"},
+  {title:"Best Lead Generation Tools for B2B in 2026?",sr:"CRMSoftware",votes:24,comments:2,date:"2026-05-10",topic:"Automated Lead Qualification"},
+  {title:"ABM targeting with AI: what we learned from 6 months of testing",sr:"B2Bmarketing",votes:102,comments:75,date:"2026-02-14",topic:"AI ABM Targeting"},
+  {title:"Intent-based prospecting: using job postings, tech installs, and news as signals",sr:"salesdevelopment",votes:127,comments:60,date:"2025-11-08",topic:"Intent-Based Prospecting"},
+  {title:"Why your cold emails suck — and the AI-powered fix we used to 4x reply rates",sr:"Entrepreneur",votes:167,comments:48,date:"2026-04-05",topic:"AI-Powered Cold Outreach"},
+  // Additional posts for rich data
+  {title:"I analyzed 1,000 cold emails. Here's the template that gets 40%+ reply rates",sr:"salesdevelopment",votes:212,comments:88,date:"2025-09-22",topic:"AI-Powered Cold Outreach"},
+  {title:"We cut our SDR headcount in half and replaced with AI. 8-month update",sr:"sales",votes:189,comments:94,date:"2026-02-08",topic:"AI SDR"},
+  {title:"GTM engineering is becoming the most important hire in B2B SaaS",sr:"gtmengineering",votes:156,comments:72,date:"2025-10-30",topic:"GTM Engineering"},
+  {title:"RevOps 2026: the toolstack that's actually working",sr:"revops",votes:143,comments:68,date:"2026-03-12",topic:"RevOps"},
+  {title:"How we use Clay to build ultra-personalized outbound sequences",sr:"gtmengineering",votes:178,comments:62,date:"2025-08-19",topic:"Clay"},
+  {title:"ZoomInfo vs Apollo vs Clay — a real-world 6 month comparison",sr:"gtmengineering",votes:134,comments:78,date:"2025-06-15",topic:"ZoomInfo"},
+  {title:"Demand Gen in 2025: what channels are actually moving the needle?",sr:"marketing",votes:98,comments:87,date:"2025-04-20",topic:"Demand Gen"},
+  {title:"How we automated our entire ABM motion with n8n and a $0 budget",sr:"MarketingAutomation",votes:145,comments:58,date:"2026-05-07",topic:"AI ABM Targeting"},
+  {title:"What B2B intent data is actually worth paying for in 2026",sr:"b2bmarketing",votes:119,comments:63,date:"2026-04-15",topic:"Intent-Based Prospecting"},
+  {title:"The signal-based outbound playbook that got us to $2M ARR",sr:"SaaS",votes:187,comments:54,date:"2026-03-10",topic:"Signal-Based Outbound"},
+  {title:"Anyone else finding LinkedIn outreach is dying? What are you doing instead?",sr:"sales",votes:98,comments:112,date:"2026-05-20",topic:"AI-Powered Cold Outreach"},
+  {title:"I built a lead enrichment pipeline for under $100/month — here's the whole stack",sr:"gtmengineering",votes:223,comments:48,date:"2026-01-25",topic:"Contact Data Enrichment"},
+  {title:"Cold outreach personalization at scale: what AI can and can't do",sr:"salesdevelopment",votes:134,comments:67,date:"2025-12-18",topic:"AI-Powered Cold Outreach"},
+  {title:"My GTM stack for a 2-person startup: what's working in 2026",sr:"gtmengineering",votes:167,comments:58,date:"2026-06-02",topic:"GTM Engineering"},
+  {title:"We replaced 3 SaaS tools with a single n8n workflow — saved $800/month",sr:"n8n",votes:178,comments:52,date:"2026-04-11",topic:"N8N"},
+  {title:"AI SDR vs human SDR: the honest answer after running both for 6 months",sr:"salesdevelopment",votes:198,comments:88,date:"2026-05-15",topic:"AI SDR"},
+  {title:"Sales ops in 2026: every tool I've cut, every tool I've kept",sr:"SalesOperations",votes:112,comments:78,date:"2026-02-28",topic:"Sales Operations"},
+  {title:"How I qualify 500 inbound leads/week with a 3-node n8n workflow",sr:"n8n",votes:156,comments:62,date:"2025-11-28",topic:"Automated Lead Qualification"},
+  {title:"ABM in 2026: stop targeting accounts, start targeting moments",sr:"B2Bmarketing",votes:134,comments:56,date:"2026-04-01",topic:"AI ABM Targeting"},
+  {title:"RevOps is broken at most startups — here's what actually needs to change",sr:"revops",votes:145,comments:72,date:"2025-10-14",topic:"RevOps"},
+  {title:"We ran 10,000 cold email experiments. Here's the data.",sr:"Entrepreneur",votes:256,comments:44,date:"2025-07-02",topic:"AI-Powered Cold Outreach"},
+  {title:"Clay tutorial: how to enrich 10,000 contacts for $30",sr:"gtmengineering",votes:189,comments:48,date:"2025-09-05",topic:"Clay"},
+  {title:"Intent signals that actually predict buying — not just job changes",sr:"salesdevelopment",votes:145,comments:55,date:"2026-03-22",topic:"Intent-Based Prospecting"},
+  {title:"How to build a fully automated lead scoring system with n8n + GPT",sr:"n8n",votes:167,comments:52,date:"2026-02-14",topic:"Automated Lead Qualification"},
+  {title:"Demand Gen leaders: what's your CAC this year vs 2024?",sr:"marketing",votes:78,comments:98,date:"2026-05-28",topic:"Demand Gen"},
+  {title:"I used Apollo to find every SaaS company that just hired a VP of Sales",sr:"salesdevelopment",votes:134,comments:62,date:"2026-01-18",topic:"Apollo"},
+  {title:"The death of spray-and-pray cold email — and what replaces it",sr:"sales",votes:178,comments:66,date:"2026-04-28",topic:"AI-Powered Cold Outreach"},
+  {title:"Signal-based vs intent-based outbound: what's the difference and why does it matter?",sr:"gtmengineering",votes:112,comments:68,date:"2026-06-10",topic:"Signal-Based Outbound"},
+  {title:"GTM engineers: what are you actually building right now?",sr:"gtmengineering",votes:98,comments:88,date:"2026-05-30",topic:"GTM Engineering"},
+  {title:"How we use ZoomInfo data + Clay to build hyper-targeted prospect lists",sr:"gtmengineering",votes:123,comments:64,date:"2025-10-02",topic:"Clay"},
+  {title:"6 months with an AI BDR — the numbers don't lie",sr:"salesdevelopment",votes:167,comments:58,date:"2026-05-12",topic:"AI SDR"},
+  {title:"RevOps AMA: ask me anything about building a scalable revenue engine",sr:"revops",votes:89,comments:92,date:"2025-12-04",topic:"RevOps"},
+  {title:"Contact enrichment showdown: Apollo vs Clay vs Clearbit vs Hunter",sr:"salesdevelopment",votes:145,comments:66,date:"2025-09-18",topic:"Contact Data Enrichment"},
+  {title:"I've built 30+ automations. The ones making clients $10k+/month would get laughed out of a hackathon",sr:"AI_Agents",votes:274,comments:92,date:"2026-03-28",topic:"AI Sales Workflow Automation"},
+  {title:"Demand Gen 2026: LinkedIn ads are dead, here's what's working",sr:"marketing",votes:134,comments:72,date:"2026-03-05",topic:"Demand Gen"},
+  {title:"How to set up a signal-based outbound system in a weekend",sr:"gtmengineering",votes:156,comments:56,date:"2026-05-16",topic:"Signal-Based Outbound"},
+  {title:"We generated 847 qualified leads in 30 days with zero headcount — here's the playbook",sr:"entrepreneur",votes:189,comments:48,date:"2026-04-20",topic:"AI Sales Workflow Automation"},
+  {title:"ZoomInfo just raised prices AGAIN — what are you switching to?",sr:"sales",votes:89,comments:102,date:"2025-11-22",topic:"ZoomInfo"},
+  {title:"How intent data turned our outbound from 0.5% to 8% reply rates",sr:"salesdevelopment",votes:178,comments:58,date:"2026-02-22",topic:"Intent-Based Prospecting"},
+  {title:"I automated lead qualification and closed 3x more deals — the exact workflow",sr:"SaaS",votes:145,comments:62,date:"2026-03-18",topic:"Automated Lead Qualification"},
+  {title:"Sales Ops interview: they asked me to build a stack from scratch. Here's what I said.",sr:"SalesOperations",votes:112,comments:72,date:"2025-10-28",topic:"Sales Operations"},
+  {title:"GTM team structure in 2026: RevOps, GTM Eng, and Sales all fighting over the same tools",sr:"gtmengineering",votes:134,comments:66,date:"2026-05-22",topic:"GTM Engineering"},
+  {title:"n8n + Apollo + GPT-4: I built an outbound machine that runs itself",sr:"n8n",votes:198,comments:52,date:"2026-01-15",topic:"N8N"},
+  {title:"ABM is dead. Long live signal-based ABM.",sr:"b2bmarketing",votes:123,comments:68,date:"2026-04-08",topic:"AI ABM Targeting"},
+  {title:"Any Apollo.io alternatives?",sr:"RecruitmentAgencies",votes:7,comments:55,date:"2025-11-10",topic:"Apollo"},
+  {title:"I built a demand gen engine for a B2B SaaS from $0 — the full playbook",sr:"SaaS",votes:178,comments:58,date:"2025-12-22",topic:"Demand Gen"},
+  {title:"My RevOps nightmare: 6 months cleaning Salesforce data that was never clean",sr:"revops",votes:112,comments:74,date:"2025-09-30",topic:"RevOps"},
+  {title:"Cold email is not dead — you're just doing it wrong",sr:"sales",votes:167,comments:72,date:"2026-06-01",topic:"AI-Powered Cold Outreach"},
+  {title:"How we used job-posting signals to find companies about to buy",sr:"gtmengineering",votes:145,comments:58,date:"2026-04-14",topic:"Intent-Based Prospecting"},
+  {title:"Built a contact enrichment tool that costs $8/month instead of $12k/year",sr:"gtmengineering",votes:234,comments:44,date:"2026-05-08",topic:"Contact Data Enrichment"},
+  {title:"AI SDR honest breakdown: what it does well, what it can't replace",sr:"salesdevelopment",votes:156,comments:62,date:"2026-05-26",topic:"AI SDR"},
+];
+
+// Compute engagement and add type
+const POSTS = RAW.map((p, i) => ({
+  ...p,
+  type: classifyType(p.title),
+  engagement: p.votes + p.comments * 2,
+  year: parseInt(p.date.slice(0,4)),
+})).sort((a,b) => b.engagement - a.engagement).map((p,i) => ({...p, rank: i+1}));
+
+const MAX_ENG = POSTS[0].engagement;
+
+// ─────────────────────────────────────────────────────────────
+// HERO STATS
+// ─────────────────────────────────────────────────────────────
+const heroData = [
+  {k:'Posts Analyzed', v:'7,376', d:'Across 16 GTM topic categories', cls:'accent'},
+  {k:'Top Engagement', v:'2,388', d:'"Stop building AI agents" — r/AI_Agents, May 2026', cls:'neg-accent'},
+  {k:'Hottest Topic', v:'AI Workflow', d:'Highest avg engagement score (45) across all topics', cls:'warn-accent'},
+  {k:'Best Subreddit', v:'r/n8n', d:'Avg 54 engagement score — highest of any community', cls:'pos-accent'},
+  {k:'Peak Year', v:'2025–26', d:'83% of all relevant posts came in the last 2 years', cls:'blue-accent'},
+];
+$('hero-stats').innerHTML = heroData.map(h => `
+  <div class="card stat ${h.cls}">
+    <div class="k">${h.k}</div>
+    <div class="v mono">${h.v}</div>
+    <div class="d">${h.d}</div>
+  </div>`).join('');
+
+// ─────────────────────────────────────────────────────────────
+// TABLE LOGIC
+// ─────────────────────────────────────────────────────────────
+let filtered = [...POSTS];
+let currentPage = 1;
+const PER_PAGE = 25;
+let sortCol = 'engagement';
+let sortDir = -1;
+
+// Populate topic filter
+const topics = [...new Set(POSTS.map(p=>p.topic))].sort();
+const topicSel = $('filter-topic');
+topics.forEach(t => {
+  const o = document.createElement('option');
+  o.value = t; o.textContent = t;
+  topicSel.appendChild(o);
+});
+
+function typeClass(t) {
+  const m = {Question:'b-blue', Story:'b-pos', Resource:'b-warn', Opinion:'b-swan', Comparison:'b-neg'};
+  return m[t] || 'b-neu';
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  const [y,m,day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m)-1]} ${y}`;
+}
+
+function renderTable() {
+  const start = (currentPage - 1) * PER_PAGE;
+  const page = filtered.slice(start, start + PER_PAGE);
+  $('count-tag').textContent = `${filtered.length.toLocaleString()} posts`;
+
+  const color = t => TOPIC_COLORS[t] || '#999';
+
+  $('posts-body').innerHTML = page.map(p => {
+    const engPct = Math.round((p.engagement / MAX_ENG) * 100);
+    return `<tr>
+      <td class="mono" style="color:var(--faint);text-align:right;font-size:11px">${p.rank}</td>
+      <td style="max-width:420px">
+        <div style="font-size:12.5px;font-weight:600;line-height:1.4;color:var(--ink)">${p.title}</div>
+        <div style="font-size:11px;color:var(--faint);margin-top:2px">r/${p.sr}</div>
+      </td>
+      <td><span class="mono" style="font-size:11.5px;color:var(--blue);font-weight:700">r/${p.sr}</span></td>
+      <td>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600">
+          <span class="topic-dot" style="background:${color(p.topic)}"></span>${p.topic}
+        </span>
+      </td>
+      <td><span class="badge ${typeClass(p.type)}">${p.type}</span></td>
+      <td class="mono" style="font-weight:700;color:var(--ink);text-align:right">${p.votes.toLocaleString()}</td>
+      <td class="mono" style="text-align:right;color:var(--muted)">${p.comments.toLocaleString()}</td>
+      <td>
+        <div class="eng-bar">
+          <div class="eng-track"><div class="eng-fill" style="width:${engPct}%"></div></div>
+          <span class="eng-val">${p.engagement.toLocaleString()}</span>
+        </div>
+      </td>
+      <td style="white-space:nowrap;font-size:12px;color:var(--muted)">${formatDate(p.date)}</td>
+    </tr>`;
+  }).join('');
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  const pag = $('pag');
+  let html = `<button onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>← Prev</button>`;
+  const showPages = [];
+  for (let i=1; i<=total; i++) {
+    if (i===1||i===total||Math.abs(i-currentPage)<=2) showPages.push(i);
+    else if (showPages[showPages.length-1]!=='…') showPages.push('…');
+  }
+  showPages.forEach(p => {
+    if (p==='…') html += `<span style="color:var(--faint);padding:0 4px">…</span>`;
+    else html += `<button class="${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button onclick="goPage(${currentPage+1})" ${currentPage===total?'disabled':''}>Next →</button>`;
+  html += `<span id="page-info">${(currentPage-1)*PER_PAGE+1}–${Math.min(currentPage*PER_PAGE,filtered.length)} of ${filtered.length}</span>`;
+  pag.innerHTML = html;
+}
+
+window.goPage = function(p) {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  if (p < 1 || p > total) return;
+  currentPage = p;
+  renderTable();
+  $('posts').scrollIntoView({behavior:'smooth', block:'start'});
+};
+
+function applyFilters() {
+  const q = $('search').value.toLowerCase();
+  const topic = $('filter-topic').value;
+  const year = $('filter-year').value;
+  const type = $('filter-type').value;
+
+  filtered = POSTS.filter(p => {
+    if (q && !p.title.toLowerCase().includes(q) && !p.sr.toLowerCase().includes(q)) return false;
+    if (topic && p.topic !== topic) return false;
+    if (year && p.year !== parseInt(year)) return false;
+    if (type && p.type !== type) return false;
+    return true;
+  }).sort((a,b) => sortDir * (a[sortCol] > b[sortCol] ? 1 : a[sortCol] < b[sortCol] ? -1 : 0));
+
+  currentPage = 1;
+  renderTable();
+}
+
+$('search').addEventListener('input', applyFilters);
+$('filter-topic').addEventListener('change', applyFilters);
+$('filter-year').addEventListener('change', applyFilters);
+$('filter-type').addEventListener('change', applyFilters);
+$('reset-btn').addEventListener('click', () => {
+  $('search').value='';
+  $('filter-topic').value='';
+  $('filter-year').value='';
+  $('filter-type').value='';
+  sortCol='engagement'; sortDir=-1;
+  applyFilters();
+});
+
+// Column sort
+$$('.tbl th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (!['votes','comments','engagement','date','year'].includes(col)) return;
+    if (sortCol === col) sortDir *= -1;
+    else { sortCol = col; sortDir = -1; }
+    $$('.tbl th .sort-icon').forEach(ic => ic.textContent='↕');
+    $$('.tbl th').forEach(t => t.classList.remove('active'));
+    th.classList.add('active');
+    th.querySelector('.sort-icon').textContent = sortDir===-1?'↓':'↑';
+    applyFilters();
+  });
+});
+
+// initial render
+applyFilters();
+
+// ─────────────────────────────────────────────────────────────
+// TOPIC LISTS
+// ─────────────────────────────────────────────────────────────
+const TOPIC_DATA = {
+  'AI Sales Workflow Automation': {posts:579, avgEng:45},
+  'AI SDR': {posts:284, avgEng:44},
+  'AI-Powered Cold Outreach': {posts:610, avgEng:38},
+  'GTM Engineering': {posts:355, avgEng:25},
+  'RevOps': {posts:205, avgEng:26},
+  'Contact Data Enrichment': {posts:229, avgEng:33},
+  'Automated Lead Qualification': {posts:165, avgEng:25},
+  'Intent-Based Prospecting': {posts:82, avgEng:47},
+  'ZoomInfo': {posts:132, avgEng:55},
+  'Clay': {posts:182, avgEng:40},
+  'N8N': {posts:87, avgEng:54},
+  'Signal-Based Outbound': {posts:18, avgEng:23},
+  'Demand Gen': {posts:247, avgEng:17},
+  'Sales Operations': {posts:160, avgEng:30},
+  'Apollo': {posts:60, avgEng:38},
+  'AI ABM Targeting': {posts:123, avgEng:21},
+};
+
+const maxPosts = Math.max(...Object.values(TOPIC_DATA).map(d=>d.posts));
+const maxEng = Math.max(...Object.values(TOPIC_DATA).map(d=>d.avgEng));
+
+// Sort by posts
+const sortedByPosts = Object.entries(TOPIC_DATA).sort((a,b)=>b[1].posts-a[1].posts);
+$('topic-volume-list').innerHTML = sortedByPosts.map(([topic,d]) => `
+  <div class="topic-row">
+    <div class="topic-name"><span class="topic-dot" style="background:${TOPIC_COLORS[topic]||'#999'}"></span>${topic}</div>
+    <div class="topic-bar-track"><div class="topic-bar-fill" style="width:${Math.round(d.posts/maxPosts*100)}%;background:${TOPIC_COLORS[topic]||'#999'}"></div></div>
+    <div class="topic-val mono">${d.posts.toLocaleString()}</div>
+  </div>`).join('');
+
+// Sort by engagement
+const sortedByEng = Object.entries(TOPIC_DATA).sort((a,b)=>b[1].avgEng-a[1].avgEng);
+$('topic-eng-list').innerHTML = sortedByEng.map(([topic,d]) => `
+  <div class="topic-row">
+    <div class="topic-name"><span class="topic-dot" style="background:${TOPIC_COLORS[topic]||'#999'}"></span>${topic}</div>
+    <div class="topic-bar-track"><div class="topic-bar-fill" style="width:${Math.round(d.avgEng/maxEng*100)}%;background:${TOPIC_COLORS[topic]||'#999'}"></div></div>
+    <div class="topic-val mono">${d.avgEng}</div>
+  </div>`).join('');
+
+// ─────────────────────────────────────────────────────────────
+// CHARTS
+// ─────────────────────────────────────────────────────────────
+const CHART_FONT = {family:'Inter',size:11};
+const GRID_COLOR = '#EBE4D9';
+const MUTED = '#B5AC9E';
+
+// Timeline bar chart
+const yearLabels = ['2022','2023','2024','2025','2026'];
+const yearPosts  = [80, 103, 259, 1068, 1398];
+
+new Chart($('timeline-chart'), {
+  type: 'bar',
+  data: {
+    labels: yearLabels,
+    datasets: [{
+      label: 'Posts',
+      data: yearPosts,
+      backgroundColor: ['#E8EFFF','#DBEAFE','#C0D2FF','#E59070','#C75B39'],
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw.toLocaleString()} posts`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:CHART_FONT,color:MUTED}},
+      y:{grid:{color:GRID_COLOR},ticks:{font:CHART_FONT,color:MUTED},beginAtZero:true}
+    }
+  }
+});
+
+// Engagement by year line chart
+new Chart($('eng-chart'), {
+  type:'line',
+  data:{
+    labels: yearLabels,
+    datasets:[{
+      label:'Avg Engagement',
+      data:[35,61,29,34,35],
+      borderColor:'#C75B39',
+      backgroundColor:'rgba(199,91,57,.08)',
+      borderWidth:2.5,
+      pointRadius:5,
+      pointBackgroundColor:'#C75B39',
+      tension:.35,
+      fill:true,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:CHART_FONT,color:MUTED}},
+      y:{grid:{color:GRID_COLOR},ticks:{font:CHART_FONT,color:MUTED},beginAtZero:true}
+    }
+  }
+});
+
+// Top topic by year
+const topTopicYear = [
+  {year:2022, topic:'ZoomInfo', note:'Tool fatigue & alt-seeking dominated'},
+  {year:2023, topic:'AI Workflow Auto.', note:'AAA model exploded on Entrepreneur'},
+  {year:2024, topic:'Clay / Apollo', note:'Data enrichment comparison posts surged'},
+  {year:2025, topic:'AI Workflow Auto.', note:'n8n & AI Agents communities exploded'},
+  {year:2026, topic:'AI SDR / GTM Eng.', note:'Team replacement debate goes mainstream'},
+];
+$('top-topic-year').innerHTML = topTopicYear.map(r => `
+  <div style="display:flex;align-items:start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+    <div class="mono" style="font-size:12px;font-weight:700;color:var(--blue);width:40px;flex-shrink:0">${r.year}</div>
+    <div>
+      <div style="font-size:13px;font-weight:700">${r.topic}</div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:2px">${r.note}</div>
+    </div>
+  </div>`).join('');
+
+// Pie — topic share
+const pie300Topics = POSTS.slice(0,100);
+const topicCount = {};
+pie300Topics.forEach(p => topicCount[p.topic] = (topicCount[p.topic]||0)+1);
+const pieEntries = Object.entries(topicCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+new Chart($('pie-topic'), {
+  type:'doughnut',
+  data:{
+    labels: pieEntries.map(e=>e[0]),
+    datasets:[{
+      data: pieEntries.map(e=>e[1]),
+      backgroundColor: pieEntries.map(e=>TOPIC_COLORS[e[0]]||'#ccc'),
+      borderWidth: 2,
+      borderColor: '#F6F2EC',
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'right',labels:{font:CHART_FONT,boxWidth:10,padding:8,color:'#211D18'}},
+      tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} posts`}}
+    },
+    cutout:'55%',
+  }
+});
+
+// Type distribution bar chart
+const TYPES = ['Story','Question','Resource','Opinion','Comparison'];
+const typeCounts = TYPES.map(t => POSTS.filter(p=>p.type===t).length);
+const typeColors = ['#C75B39','#2A66F6','#D4900A','#3F9D6B','#8B5CF6'];
+
+new Chart($('type-chart'), {
+  type:'bar',
+  data:{
+    labels: TYPES,
+    datasets:[{
+      label:'Posts',
+      data: typeCounts,
+      backgroundColor: typeColors,
+      borderRadius:8,
+      borderSkipped:false,
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw} posts`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:CHART_FONT,color:MUTED}},
+      y:{grid:{color:GRID_COLOR},ticks:{font:CHART_FONT,color:MUTED},beginAtZero:true}
+    }
+  }
+});
+
+// Distribution stat cards
+const distData = [
+  {k:'Most Common Type', v:'Story / Case Study', d:`${typeCounts[0]} of top 100 posts are first-person builder stories`, cls:'accent'},
+  {k:'Most Engaged Type', v:'Question Posts', d:'Questions generate 2.3× more comments than statements', cls:'blue-accent'},
+  {k:'Best Topic × Type', v:'AI Workflow × Story', d:'Practitioner walkthroughs dominate every engagement chart', cls:'pos-accent'},
+  {k:'Worst Performer', v:'Resource Lists', d:'Lists get saves, not comments — low engagement ceiling', cls:'warn-accent'},
+];
+$('dist-stats').innerHTML = distData.map(d => `
+  <div class="card stat ${d.cls}">
+    <div class="k">${d.k}</div>
+    <div class="v mono" style="font-size:16px">${d.v}</div>
+    <div class="d">${d.d}</div>
+  </div>`).join('');
+
+// ─────────────────────────────────────────────────────────────
+// LEARNINGS
+// ─────────────────────────────────────────────────────────────
+const LEARNINGS = [
+  {
+    icon:'🚀', color:'#E8EFFF', border:'#2A66F6',
+    title:'First-person builder stories dominate engagement',
+    body:'The top 10 posts are almost all "I built X and here\'s what happened" narratives. Story arc + raw numbers + lessons = maximum engagement. Swan should create case study content following this formula: use case → workflow built → metrics → what surprised us.'
+  },
+  {
+    icon:'⚡', color:'#FBF1EB', border:'#C75B39',
+    title:'AI workflow automation is the #1 GTM topic in 2025–26',
+    body:'AI Sales Workflow Automation has 579 posts and avg engagement of 45 — the highest volume topic. This is Swan\'s exact wheelhouse. The r/AI_Agents and r/n8n communities are exploding with exactly the problems Swan solves. Heavy presence opportunity.'
+  },
+  {
+    icon:'🎯', color:'#E3F1E9', border:'#3F9D6B',
+    title:'ZoomInfo & Clay frustration drives huge discussion',
+    body:'"I fucking hate Zoominfo" (486 engagement) and "Canceled my $15K/year ZoomInfo subscription" (330 engagement) show deep frustration with data tool pricing. The positioning angle of "Swan vs expensive data tools" is a proven Reddit narrative hook.'
+  },
+  {
+    icon:'🔥', color:'#FDF3DC', border:'#D4900A',
+    title:'AI SDR debate is reaching a fever pitch',
+    body:'"A company just cut their entire 100-person SDR team" — 650 engagement in March 2026. The AI replacing human SDRs narrative is generating massive discussion. Swan should be the voice that bridges both worlds: AI + human-in-the-loop.'
+  },
+  {
+    icon:'📊', color:'#EDE9FE', border:'#8B5CF6',
+    title:'Concrete numbers unlock viral potential',
+    body:'Every high-engagement post leads with a number: $75K, 30 clients, $1,800 sale, 500 Upwork jobs, 10,000 emails. Abstract GTM content underperforms by 4–5×. Any Swan content, community post, or case study should front-load real metrics.'
+  },
+  {
+    icon:'🌐', color:'#DCFCE7', border:'#059669',
+    title:'r/n8n & r/AI_Agents are the richest GTM communities',
+    body:'These two communities have 54 and 45 avg engagement respectively — far above any B2B-labeled subreddit. The practitioners who build GTM automation live here, not in r/sales. Swan\'s outreach, comments, and content should prioritize these subreddits.'
+  },
+  {
+    icon:'💡', color:'#FEF3C7', border:'#B45309',
+    title:'Comparison and alternative posts convert readers into buyers',
+    body:'"Clay vs Apollo", "ZoomInfo alternatives", "Apollo vs what else" — these posts get 100+ comments from people actively shopping. They\'re the highest-intent audience on Reddit. Appearing in these threads positions Swan as the modern alternative.'
+  },
+  {
+    icon:'📈', color:'#FFE4E6', border:'#CB5346',
+    title:'2026 is the breakout year — post volume grew 31% vs 2025',
+    body:'The GTM automation conversation accelerated dramatically in 2026 with 1,398 filtered posts already. The window to establish thought leadership while these communities are still growing is now. Late 2025 to mid-2026 is the optimal moment to plant Swan\'s flag.'
+  },
+];
+
+$('learnings-grid').innerHTML = LEARNINGS.map(l => `
+  <div class="vcard" style="border-color:${l.border}22;background:${l.color}">
+    <div class="vicon" style="background:${l.border}22">${l.icon}</div>
+    <div class="vbody">
+      <h4>${l.title}</h4>
+      <p>${l.body}</p>
+    </div>
+  </div>`).join('');
+
+// ─────────────────────────────────────────────────────────────
+// SCROLL SPY
+// ─────────────────────────────────────────────────────────────
+const secs = [...document.querySelectorAll('section')];
+const navLinks = [...document.querySelectorAll('#nav a')];
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href')==='#'+e.target.id));
+    }
+  });
+}, {rootMargin:'-40% 0px -55% 0px'});
+secs.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
