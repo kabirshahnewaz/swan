@@ -149,6 +149,18 @@ footer b{color:var(--muted)}
 /* RESPONSIVE */
 @media(max-width:1000px){.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}nav{display:none}}
 @media(max-width:600px){.g5,.g4{grid-template-columns:1fr 1fr}main{padding:0 14px 80px}.bar{padding:12px 14px}}
+  /* shared cross-report menu */
+  .rnav{position:relative;display:inline-block}
+  .rnav>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.02em;padding:6px 11px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);transition:border-color .15s,color .15s}
+  .rnav>summary::-webkit-details-marker{display:none}
+  .rnav>summary::marker{content:""}
+  .rnav>summary:hover,.rnav[open]>summary{border-color:var(--swan);color:var(--swan)}
+  .rnav-caret{font-size:9px;transition:transform .15s}
+  .rnav[open] .rnav-caret{transform:rotate(180deg)}
+  .rnav-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:200;min-width:236px;display:flex;flex-direction:column;gap:2px;padding:7px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  .rnav-menu a{padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;text-decoration:none}
+  .rnav-menu a:hover{background:var(--swan-tint,var(--swan-t,#FBF1EB));color:var(--swan)}
+  .rnav-menu a[aria-current=page]{background:var(--swan);color:#fff}
 </style>
 </head>
 <body>
@@ -159,6 +171,19 @@ footer b{color:var(--muted)}
       <svg viewBox="0 0 24 24" fill="none"><path d="M5 19c0-5 3-9 8-9 0 0-2-2-2-4 3 0 6 2 6 6 0 5-4 9-9 9-2 0-4-1-4-1s1-1 1-1z" fill="#211D18"/><circle cx="15.4" cy="10.2" r=".9" fill="#fff"/><path d="M5 20h14" stroke="#C75B39" stroke-width="1.6" stroke-linecap="round"/></svg>
       Swan
     </div>
+    <details class="rnav">
+      <summary class="rnav-btn">All Reports <span class="rnav-caret">▾</span></summary>
+      <nav class="rnav-menu">
+        <a href="swan_overview.html">Overview</a>
+        <a href="swan_competitor_intelligence.html">Competitor Intelligence</a>
+        <a href="swan_role_intelligence.html">Role Intelligence</a>
+        <a href="swan_subreddit_intelligence_map.html">Subreddit Map</a>
+        <a href="swan_use_case_intelligence.html">Use Case Intelligence</a>
+        <a href="swan_audience_report.html">Audience Intelligence</a>
+        <a href="swan_top_posts_report.html" aria-current="page">Top Posts</a>
+        <a href="swan_reddit_roadmap.html">Marketing Roadmap</a>
+      </nav>
+    </details>
     <span class="pill">Reddit Top Posts</span>
     <nav id="nav">
       <a href="#overview">Overview</a>

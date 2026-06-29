@@ -10,16 +10,18 @@ There is **no build system, package manager, test suite, or git repo**. Files ar
 
 ## The reports
 
+All files use a consistent `swan_<topic>.html` lowercase snake_case naming convention.
+
 - `swan_overview.html` — hub page summarizing all seven reports (no charts; pure HTML/CSS).
-- `Competitor_Intellegence_v2.html` — share-of-voice across 49 tools, sentiment, co-mentions. (note: filename is misspelled "Intellegence" — preserve it unless asked to rename.)
-- `Role_Intelligence_Report.html` — findings by GTM role (RevOps, Sales Ops, GTM Eng, Demand Gen, Sales). Chart-heavy.
-- `Subreddit_Intelligence_Map.html` — subreddit prioritization.
-- `Use_Case_Market_Intelligence.html` — use-case / demand analysis. Chart-heavy.
-- `swan_audience_report (2).html` — audience psychology / personas.
+- `swan_competitor_intelligence.html` — share-of-voice across 49 tools, sentiment, co-mentions.
+- `swan_role_intelligence.html` — findings by GTM role (RevOps, Sales Ops, GTM Eng, Demand Gen, Sales). Chart-heavy.
+- `swan_subreddit_intelligence_map.html` — subreddit prioritization.
+- `swan_use_case_intelligence.html` — use-case / demand analysis. Chart-heavy.
+- `swan_audience_report.html` — audience psychology / personas.
 - `swan_top_posts_report.html` — top Reddit posts.
 - `swan_reddit_roadmap.html` — go-to-market roadmap (no charts).
 
-The reports are described as "inter-linked" in copy, but the files do **not** currently hyperlink to each other — navigation between them is conceptual, not via `<a href>`.
+Every file's header contains a shared **"All Reports ▾" dropdown** (a `.rnav` native `<details>` element, no JS) linking to all 8 pages, with the current page marked via `aria-current="page"`. Its CSS is appended to each file's `<style>` block and uses only tokens present in all files (radius is hardcoded; swan tint uses a `var(--swan-tint, var(--swan-t, #FBF1EB))` fallback chain). This is separate from each report's in-page section `<nav id="nav">` / `<nav id="mainnav">`, which links to anchors within that page.
 
 ## Architecture / conventions
 

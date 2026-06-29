@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swan · Use Case Market Intelligence</title>
+<title>Swan · Role Intelligence Report</title>
 <script>
 /* Chart.js 4.4.1 (MIT) inlined for a fully self-contained, offline-capable dashboard */
 /*!
@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F6F2EC;--card:#FFFFFF;--line:#EBE4D9;--line2:#E0D7C8;--ink:#211D18;--muted:#8C8275;--faint:#B5AC9E;--swan:#C75B39;--swan-soft:#F3E2D9;--swan-tint:#FBF1EB;--pos:#3F9D6B;--pos-soft:#E3F1E9;--neu:#D8D1C5;--neu-soft:#EFEBE3;--neg:#CB5346;--neg-soft:#F6E2DF;--warn:#D4900A;--warn-soft:#FDF3DC;--blue:#2A66F6;--blue-soft:#E8EFFF;--shadow:0 1px 2px rgba(40,30,20,.04),0 6px 22px rgba(40,30,20,.05);--r:16px}
+:root{--bg:#F6F2EC;--card:#FFFFFF;--line:#EBE4D9;--line2:#E0D7C8;--ink:#211D18;--muted:#8C8275;--faint:#B5AC9E;--swan:#C75B39;--swan-soft:#F3E2D9;--swan-tint:#FBF1EB;--pos:#3F9D6B;--pos-soft:#E3F1E9;--neu:#D8D1C5;--neu-soft:#EFEBE3;--neg:#CB5346;--neg-soft:#F6E2DF;--warn:#D4900A;--warn-soft:#FDF3DC;--blue:#2A66F6;--blue-soft:#E8EFFF;--purple:#8B5CF6;--purple-soft:#EDE9FE;--shadow:0 1px 2px rgba(40,30,20,.04),0 6px 22px rgba(40,30,20,.05);--r:16px}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
 .mono{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums}a{color:inherit;text-decoration:none}
@@ -45,11 +45,10 @@ section{padding-top:52px;scroll-margin-top:70px}
 h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
 .sub{color:var(--muted);font-size:14px;margin-bottom:20px;max-width:700px;line-height:1.6}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
-.grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g5{grid-template-columns:repeat(5,1fr)}
 .panel{padding:22px 24px}.panel h3{font-size:14.5px;font-weight:700;margin-bottom:3px}.panel .ps{font-size:12px;color:var(--muted);margin-bottom:16px}
 .stat{padding:20px 18px}.stat .k{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
-.stat .v{font-family:"JetBrains Mono";font-weight:700;font-size:22px;letter-spacing:-.04em;line-height:1.1}
-.stat .d{font-size:11.5px;color:var(--faint);margin-top:6px;line-height:1.4}
+.stat .v{font-family:"JetBrains Mono";font-weight:700;font-size:20px;letter-spacing:-.04em;line-height:1.1}.stat .d{font-size:11.5px;color:var(--faint);margin-top:6px;line-height:1.4}
 .stat.accent{background:linear-gradient(150deg,#fff,var(--swan-tint));border-color:#EAD6CB}.stat.accent .v{color:var(--swan)}
 .stat.neg-accent{background:linear-gradient(150deg,#fff,var(--neg-soft));border-color:#E0CCCB}.stat.neg-accent .v{color:var(--neg)}
 .stat.pos-accent{background:linear-gradient(150deg,#fff,var(--pos-soft));border-color:#C4DDD2}.stat.pos-accent .v{color:var(--pos)}
@@ -62,6 +61,7 @@ h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
 .badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:.05em;padding:3px 8px;border-radius:5px;text-transform:uppercase;white-space:nowrap}
 .b-high{background:var(--neg-soft);color:var(--neg)}.b-med{background:var(--warn-soft);color:var(--warn)}.b-low{background:var(--neu-soft);color:var(--muted)}
 .b-pos{background:var(--pos-soft);color:var(--pos)}.b-blue{background:var(--blue-soft);color:var(--blue)}.b-swan{background:var(--swan-tint);color:var(--swan)}
+.b-purple{background:var(--purple-soft);color:var(--purple)}
 .blist .b{display:grid;grid-template-columns:160px 1fr 50px;align-items:center;gap:10px;margin-bottom:9px}
 .blist .b .l{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .blist .b .t{height:17px;background:var(--swan-tint);border-radius:5px;overflow:hidden}
@@ -70,19 +70,17 @@ h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
 .qgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:4px}
 .qcard{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:28px 16px 12px;position:relative}
 .qcard::before{content:"“";font-size:38px;line-height:1;color:var(--swan-soft);position:absolute;top:6px;left:13px;font-family:Georgia,serif;pointer-events:none}
-.qcard p{font-size:12.5px;color:var(--ink);line-height:1.55}
-.qcard .src{margin-top:9px;font-size:10.5px;color:var(--faint);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.qcard p{font-size:12.5px;color:var(--ink);line-height:1.55}.qcard .src{margin-top:9px;font-size:10.5px;color:var(--faint);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.role-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.05em;padding:3px 9px;border-radius:6px;white-space:nowrap}
 .sig-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.sig-row:last-child{border-bottom:none}
-.sig-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.sig-label{font-size:13px;font-weight:600;flex:1}.sig-bar{width:130px;height:11px;background:var(--neu-soft);border-radius:4px;overflow:hidden}
-.sig-fill{height:100%;border-radius:4px}.sig-pct{font-family:"JetBrains Mono";font-weight:700;font-size:12px;width:38px;text-align:right}
+.sig-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sig-label{font-size:13px;font-weight:600;flex:1}.sig-bar{flex:1;height:11px;background:var(--neu-soft);border-radius:4px;overflow:hidden}
+.sig-fill{height:100%;border-radius:4px}.sig-pct{font-family:"JetBrains Mono";font-weight:700;font-size:12px;width:42px;text-align:right}
 .stage-item{padding:7px 10px;background:var(--bg);border-radius:7px;margin-bottom:5px;border-left:3px solid var(--line2);font-size:12.5px}
 .vcard{border:1px solid var(--line);border-radius:12px;padding:15px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;background:#fff}
 .vcard:last-child{margin-bottom:0}.vicon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .vbody h4{font-size:13.5px;font-weight:700;margin-bottom:3px}.vbody p{font-size:12.5px;color:var(--muted);line-height:1.45}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
-.chip{font-size:11px;font-weight:600;color:var(--swan);background:var(--swan-tint);border:1px solid #EEDDD4;padding:4px 9px;border-radius:7px}
 .cwrap{position:relative;width:100%}
 .callout{padding:28px 24px;background:linear-gradient(150deg,#fff,var(--swan-tint));border-color:#EAD6CB}
 .bignum{font-family:"JetBrains Mono";font-weight:700;font-size:64px;letter-spacing:-.05em;line-height:.9;color:var(--swan)}
@@ -90,10 +88,34 @@ h2{font-size:26px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px}
 .post-item{padding:10px 0;border-bottom:1px solid var(--line)}.post-item:last-child{border-bottom:none}
 .post-title{font-size:12.5px;font-weight:600;line-height:1.4;margin-bottom:5px}
 .post-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-footer{max-width:1220px;margin:0 auto;padding:28px 24px 60px;color:var(--faint);font-size:11.5px;border-top:1px solid var(--line);line-height:1.8}
-footer b{color:var(--muted)}
-@media(max-width:1000px){.g5{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.qgrid{grid-template-columns:1fr}nav{display:none}}
-@media(max-width:600px){.g5,.g4,.g3{grid-template-columns:1fr 1fr}.blist .b{grid-template-columns:110px 1fr 38px}main{padding:0 14px 80px}.bar{padding:12px 14px}.bignum{font-size:48px}}
+/* tool grid per role */
+.tool-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tool-role-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tool-role-card h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+/* radar-style comparison */
+.compare-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
+.compare-label{width:130px;font-weight:600;font-size:12px}
+.compare-bars{flex:1;display:flex;flex-direction:column;gap:3px}
+.compare-bar-item{display:flex;align-items:center;gap:7px}
+.compare-bar-name{width:90px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compare-bar-track{flex:1;height:9px;background:var(--neu-soft);border-radius:3px;overflow:hidden}
+.compare-bar-fill{height:100%;border-radius:3px}
+.compare-bar-val{font-family:"JetBrains Mono";font-size:10px;width:32px;text-align:right;color:var(--muted)}
+footer{max-width:1220px;margin:0 auto;padding:28px 24px 60px;color:var(--faint);font-size:11.5px;border-top:1px solid var(--line);line-height:1.8}footer b{color:var(--muted)}
+@media(max-width:1000px){.g5{grid-template-columns:repeat(3,1fr)}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.qgrid{grid-template-columns:1fr}.tool-role-grid{grid-template-columns:1fr}nav{display:none}}
+@media(max-width:600px){.g5{grid-template-columns:1fr 1fr}.blist .b{grid-template-columns:110px 1fr 38px}main{padding:0 14px 80px}.bar{padding:12px 14px}.bignum{font-size:48px}}
+  /* shared cross-report menu */
+  .rnav{position:relative;display:inline-block}
+  .rnav>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.02em;padding:6px 11px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);transition:border-color .15s,color .15s}
+  .rnav>summary::-webkit-details-marker{display:none}
+  .rnav>summary::marker{content:""}
+  .rnav>summary:hover,.rnav[open]>summary{border-color:var(--swan);color:var(--swan)}
+  .rnav-caret{font-size:9px;transition:transform .15s}
+  .rnav[open] .rnav-caret{transform:rotate(180deg)}
+  .rnav-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:200;min-width:236px;display:flex;flex-direction:column;gap:2px;padding:7px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  .rnav-menu a{padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;text-decoration:none}
+  .rnav-menu a:hover{background:var(--swan-tint,var(--swan-t,#FBF1EB));color:var(--swan)}
+  .rnav-menu a[aria-current=page]{background:var(--swan);color:#fff}
 </style>
 </head>
 <body>
@@ -103,555 +125,775 @@ footer b{color:var(--muted)}
       <svg viewBox="0 0 24 24" fill="none"><path d="M5 19c0-5 3-9 8-9 0 0-2-2-2-4 3 0 6 2 6 6 0 5-4 9-9 9-2 0-4-1-4-1s1-1 1-1z" fill="#211D18"/><circle cx="15.4" cy="10.2" r=".9" fill="#fff"/><path d="M5 20h14" stroke="#C75B39" stroke-width="1.6" stroke-linecap="round"/></svg>
       Swan
     </div>
-    <span class="pill">Use Case Market Intelligence</span>
+    <details class="rnav">
+      <summary class="rnav-btn">All Reports <span class="rnav-caret">▾</span></summary>
+      <nav class="rnav-menu">
+        <a href="swan_overview.html">Overview</a>
+        <a href="swan_competitor_intelligence.html">Competitor Intelligence</a>
+        <a href="swan_role_intelligence.html" aria-current="page">Role Intelligence</a>
+        <a href="swan_subreddit_intelligence_map.html">Subreddit Map</a>
+        <a href="swan_use_case_intelligence.html">Use Case Intelligence</a>
+        <a href="swan_audience_report.html">Audience Intelligence</a>
+        <a href="swan_top_posts_report.html">Top Posts</a>
+        <a href="swan_reddit_roadmap.html">Marketing Roadmap</a>
+      </nav>
+    </details>
+    <span class="pill">Role Intelligence Report</span>
     <nav id="nav">
-      <a href="#overview">Overview</a><a href="#usecases">Use Cases</a><a href="#complaints">Complaints</a>
-      <a href="#features">Features</a><a href="#objections">Objections</a><a href="#pain">Pain Points</a>
-      <a href="#gaps">Gaps</a><a href="#signals">Signals</a><a href="#audience">Audience</a>
-      <a href="#sentiment">Sentiment</a><a href="#trend">Trend</a><a href="#verdicts">Verdicts</a>
+      <a href="#overview">Overview</a>
+      <a href="#roles">Roles</a>
+      <a href="#complaints">Complaints</a>
+      <a href="#features">Features</a>
+      <a href="#objections">Objections</a>
+      <a href="#pain">Pain Points</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#compare">Role Compare</a>
+      <a href="#tools">Tools</a>
+      <a href="#sentiment">Sentiment</a>
+      <a href="#trend">Trend</a>
+      <a href="#verdicts">Verdicts</a>
     </nav>
   </div>
 </header>
 <main>
+
+<!-- OVERVIEW -->
 <section id="overview" style="padding-top:40px">
-  <div class="eyebrow">Use Case Market Intelligence</div>
-  <h2>What buyers actually say &#8212; across 7 GTM use cases</h2>
-  <p class="sub">Synthesized from 2,563 Reddit posts and 18,279 comments spanning AI-Powered Cold Outreach, AI Sales Workflow Automation, Contact Data Enrichment, Automated Lead Qualification, Intent-Based Prospecting, AI ABM Targeting, and Signal-Based Outbound.</p>
+  <div class="eyebrow">Role Intelligence Report</div>
+  <h2>What GTM roles are saying &#8212; in their own words</h2>
+  <p class="sub">Synthesized from 2,147 Reddit posts and 10,746 comments across AI SDR, Demand Gen, GTM Engineering, RevOps, and Sales Operations &#8212; revealing what each role complains about, demands, fears, and needs from AI tools.</p>
   <div class="grid g5" id="hero-stats" style="margin-bottom:14px"></div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Intelligence Dimension</th><th>Top Signal</th><th>Prevalence</th><th>Evidence</th><th>Strategic Implication</th></tr></thead><tbody id="snapshot-table"></tbody></table></div>
-</section>
-<section id="usecases">
-  <div class="eyebrow">Use Case Breakdown <span class="n">01</span></div>
-  <h2>Which use cases drive the most conversation</h2>
-  <p class="sub">Discussion volume, engagement, and comment depth per use case &#8212; showing where buyer attention concentrates.</p>
-  <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Post Volume by Use Case</h3><div class="ps">% share of total discussion</div><div class="cwrap" style="height:260px"><canvas id="ucVolBar"></canvas></div></div>
-    <div class="card panel"><h3>Engagement by Use Case</h3><div class="ps">Average upvotes vs average comments per post</div><div class="cwrap" style="height:260px"><canvas id="ucEngBar"></canvas></div></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Intelligence Dimension</th><th>Top Signal</th><th>Prevalence</th><th>Evidence</th><th>Strategic Implication</th></tr></thead>
+      <tbody id="snapshot-table"></tbody>
+    </table>
   </div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Use Case</th><th>% of Posts</th><th>Avg Upvotes</th><th>Avg Comments</th><th>Engagement</th><th>Top Subreddit</th></tr></thead><tbody id="uc-table"></tbody></table></div>
 </section>
+
+<!-- ROLES -->
+<section id="roles">
+  <div class="eyebrow">Role Breakdown <span class="n">01</span></div>
+  <h2>Which roles drive the conversation &#8212; and how loud</h2>
+  <p class="sub">Post volume, engagement depth, and avg. comment count per role &#8212; showing where attention concentrates and where debate runs hottest.</p>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card panel">
+      <h3>Post Volume by Role</h3>
+      <div class="ps">% share of all 2,147 posts</div>
+      <div class="cwrap" style="height:260px"><canvas id="roleVolBar"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Engagement by Role</h3>
+      <div class="ps">Avg upvotes vs avg comments per post &#8212; higher = more debate</div>
+      <div class="cwrap" style="height:260px"><canvas id="roleEngBar"></canvas></div>
+    </div>
+  </div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Role</th><th>% Posts</th><th>Avg Upvotes</th><th>Avg Comments</th><th>Engagement</th><th>Top Subreddit</th></tr></thead>
+      <tbody id="role-table"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- COMPLAINTS -->
 <section id="complaints">
   <div class="eyebrow">Complaint Analysis <span class="n">02</span></div>
-  <h2>What the market is loudest about</h2>
-  <p class="sub">Complaint signals extracted from post titles, bodies, and full comment threads &#8212; ranked by discussion frequency.</p>
+  <h2>What each role is loudest about</h2>
+  <p class="sub">Complaint signals ranked by overall frequency &#8212; with the role where each complaint is most concentrated shown in the table.</p>
   <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Complaint Categories &#8212; % Share</h3><div class="ps">Red = High severity &middot; Amber = Medium &middot; Grey = Low</div><div class="cwrap" style="height:300px"><canvas id="complaintBar"></canvas></div></div>
-    <div class="card panel"><h3>Complaint Distribution</h3><div class="ps">Relative weight of each complaint category</div><div class="cwrap" style="height:300px"><canvas id="complaintPie"></canvas></div></div>
+    <div class="card panel">
+      <h3>Complaint Categories &#8212; % Share</h3>
+      <div class="ps">Red = High severity &middot; Amber = Medium &middot; Grey = Low</div>
+      <div class="cwrap" style="height:310px"><canvas id="complaintBar"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Complaint Distribution</h3>
+      <div class="ps">Relative weight across all complaint categories</div>
+      <div class="cwrap" style="height:310px"><canvas id="complaintPie"></canvas></div>
+    </div>
   </div>
-  <div class="card" style="overflow-x:auto;margin-bottom:14px"><table class="tbl"><thead><tr><th>Complaint Category</th><th>% Share</th><th>Source</th><th>Severity</th><th>Signal Pattern</th></tr></thead><tbody id="complaint-table"></tbody></table></div>
+  <div class="card" style="overflow-x:auto;margin-bottom:14px">
+    <table class="tbl">
+      <thead><tr><th>Complaint Category</th><th>% Overall</th><th>Severity</th><th>Top Role</th><th>% in That Role</th><th>Signal Pattern</th></tr></thead>
+      <tbody id="complaint-table"></tbody>
+    </table>
+  </div>
   <div class="grid g5" id="complaint-cards"></div>
 </section>
+
+<!-- FEATURES -->
 <section id="features">
   <div class="eyebrow">Feature Demands <span class="n">03</span></div>
-  <h2>What buyers are asking to be built</h2>
-  <p class="sub">Every feature request or product demand found across titles, bodies, and comments &#8212; sorted by frequency.</p>
-  <div class="card panel" style="margin-bottom:14px"><h3>Top 10 Demanded Capabilities</h3><div class="ps">% share of all discussions containing each demand signal</div><div class="cwrap" style="height:320px"><canvas id="featureBar"></canvas></div></div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Feature / Capability</th><th>% Share</th><th>Source</th><th>Demand</th><th>Exists in Market?</th><th>Swan Fit</th></tr></thead><tbody id="feature-table"></tbody></table></div>
+  <h2>What GTM roles are asking to be built</h2>
+  <p class="sub">Every feature request or product demand across all five role datasets &#8212; with Swan fit mapped against each.</p>
+  <div class="card panel" style="margin-bottom:14px">
+    <h3>Top 10 Demanded Capabilities &#8212; % of All Discussions</h3>
+    <div class="ps">Bar width = demand frequency &middot; Colour = demand strength</div>
+    <div class="cwrap" style="height:320px"><canvas id="featureBar"></canvas></div>
+  </div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Feature / Capability</th><th>% Share</th><th>Demand</th><th>Exists in Market?</th><th>Top Role</th><th>Swan Fit</th></tr></thead>
+      <tbody id="feature-table"></tbody>
+    </table>
+  </div>
 </section>
+
+<!-- OBJECTIONS -->
 <section id="objections">
   <div class="eyebrow">Objections &amp; Pushback <span class="n">04</span></div>
-  <h2>Where trust breaks down</h2>
-  <p class="sub">Skepticism, pushback, and objection patterns found across all three data sources &#8212; ranked by prevalence and intensity.</p>
+  <h2>Where trust breaks down across roles</h2>
+  <p class="sub">Skepticism and pushback signals extracted from all three sources &#8212; ranked by intensity and prevalence.</p>
   <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Objection Types &#8212; % Share</h3><div class="ps">Red = Strong &middot; Amber = Moderate &middot; Grey = Mild</div><div class="cwrap" style="height:260px"><canvas id="objectionBar"></canvas></div></div>
-    <div class="card panel"><h3>Community Pushback &#8212; Direct Voices</h3><div class="ps">Paraphrased objection signals from comment threads</div><div class="qgrid" id="objection-quotes"></div></div>
+    <div class="card panel">
+      <h3>Objection Types &#8212; % Share</h3>
+      <div class="ps">Red = Strong &middot; Amber = Moderate &middot; Grey = Mild</div>
+      <div class="cwrap" style="height:260px"><canvas id="objectionBar"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Community Pushback &#8212; Direct Voices</h3>
+      <div class="ps">Paraphrased objection signals from comment threads across roles</div>
+      <div class="qgrid" id="objection-quotes"></div>
+    </div>
   </div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Objection</th><th>% Share</th><th>Source</th><th>Target</th><th>Intensity</th></tr></thead><tbody id="objection-table"></tbody></table></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Objection</th><th>% Share</th><th>Intensity</th><th>Target</th><th>Hottest Role</th></tr></thead>
+      <tbody id="objection-table"></tbody>
+    </table>
+  </div>
 </section>
+
+<!-- PAIN POINTS -->
 <section id="pain">
   <div class="eyebrow">Frustrations &amp; Pain Points <span class="n">05</span></div>
-  <h2>The emotional friction in the buyer journey</h2>
-  <p class="sub">Recurring unmet needs and broken workflow signals &#8212; extracted from tone and emotional language across all sources.</p>
+  <h2>The emotional friction inside each role</h2>
+  <p class="sub">Recurring unmet needs and workflow breakdowns &#8212; extracted from tone and emotional language across all five roles.</p>
   <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Pain Point Frequency</h3><div class="ps">% share of all discussions containing each pain signal</div><div class="cwrap" style="height:280px"><canvas id="painBar"></canvas></div></div>
-    <div class="card panel"><h3>Pain Point &times; Buyer Stage Map</h3><div class="ps">Where in the funnel each pain signal concentrates</div><div id="pain-stage-list" style="margin-top:4px"></div></div>
+    <div class="card panel">
+      <h3>Pain Point Frequency</h3>
+      <div class="ps">% of all discussions containing each pain signal</div>
+      <div class="cwrap" style="height:280px"><canvas id="painBar"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Pain &times; Buyer Stage Map</h3>
+      <div class="ps">Where in the journey each pain concentrates per role</div>
+      <div id="pain-stage-list" style="margin-top:4px"></div>
+    </div>
   </div>
-  <div class="card" style="overflow-x:auto;margin-bottom:14px"><table class="tbl"><thead><tr><th>Pain Point</th><th>% Share</th><th>Source</th><th>Intensity</th><th>Stage</th><th>Opportunity?</th></tr></thead><tbody id="pain-table"></tbody></table></div>
+  <div class="card" style="overflow-x:auto;margin-bottom:14px">
+    <table class="tbl">
+      <thead><tr><th>Pain Point</th><th>% Share</th><th>Intensity</th><th>Stage</th><th>Hottest Role</th><th>Opportunity?</th></tr></thead>
+      <tbody id="pain-table"></tbody>
+    </table>
+  </div>
   <div class="qgrid" id="pain-quotes"></div>
 </section>
+
+<!-- MARKET GAPS -->
 <section id="gaps">
   <div class="eyebrow">Market Gap Analysis <span class="n">06</span></div>
-  <h2>Where no tool is winning the conversation</h2>
-  <p class="sub">Identified from the intersection of complaints, demands, and objections &#8212; where signal strength is high but solutions fall short.</p>
+  <h2>Where no tool is winning across any role</h2>
+  <p class="sub">Cross-role gaps &#8212; unmet needs that appear in multiple role datasets with high signal and no adequate current solution.</p>
   <div class="grid g2" style="margin-bottom:14px">
-    <div class="card callout"><div class="bignum">4</div><h3>High-priority gaps with no adequate solution</h3><p>Across all 7 use cases, four major unmet needs appear repeatedly with strong signal strength and no current tool filling them.</p></div>
-    <div class="card panel"><h3>Gap Signal Strength &#8212; Ranked</h3><div class="ps">Red = High priority &middot; Amber = Medium</div><div class="cwrap" style="height:220px"><canvas id="gapBar"></canvas></div></div>
+    <div class="card callout">
+      <div class="bignum">4</div>
+      <h3>High-priority cross-role gaps</h3>
+      <p>Four gaps show up repeatedly across multiple roles with strong evidence and no current tool adequately filling them. These are the market white spaces.</p>
+    </div>
+    <div class="card panel">
+      <h3>Gap Signal Strength &#8212; Ranked</h3>
+      <div class="ps">Dark = High priority &middot; Amber = Medium</div>
+      <div class="cwrap" style="height:220px"><canvas id="gapBar"></canvas></div>
+    </div>
   </div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Gap / Unmet Need</th><th>Signal</th><th>Source</th><th>Current Solutions</th><th>Size</th><th>Priority</th></tr></thead><tbody id="gap-table"></tbody></table></div>
-</section>
-<section id="signals">
-  <div class="eyebrow">Intent Signal Landscape <span class="n">07</span></div>
-  <h2>Which signals buyers talk about most</h2>
-  <p class="sub">Buying trigger types discussed across Signal-Based Outbound and Intent-Based Prospecting threads &#8212; and what jobs buyers want those signals to accomplish.</p>
-  <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Signal Type Frequency</h3><div class="ps">% of all discussions mentioning each signal category</div><div id="signal-list"></div></div>
-    <div class="card panel"><h3>Jobs to Be Done</h3><div class="ps">What buyers are trying to accomplish, ranked by mention frequency</div><div class="cwrap" style="height:240px"><canvas id="jtbdBar"></canvas></div></div>
-  </div>
-  <div class="card panel"><h3>Community Voices on Signals</h3><div class="ps">Direct quotes on which signals actually move the needle</div><div class="qgrid" id="signal-quotes"></div></div>
-</section>
-<section id="audience">
-  <div class="eyebrow">Audience &amp; Segment Analysis <span class="n">08</span></div>
-  <h2>Who is having this conversation</h2>
-  <p class="sub">Role distribution, buyer stage, and tool comparison patterns &#8212; showing exactly who Swan needs to be talking to.</p>
-  <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Audience Segment Breakdown</h3><div class="ps">% of discussions attributable to each role or persona type</div><div class="cwrap" style="height:250px"><canvas id="audienceBar"></canvas></div></div>
-    <div class="card panel"><h3>Buyer Stage Distribution</h3><div class="ps">Where in the funnel these discussions are happening</div><div class="cwrap" style="height:250px"><canvas id="stageDonut"></canvas></div></div>
-  </div>
-  <div class="grid g2">
-    <div class="card panel"><h3>Active Tool Comparisons</h3><div class="ps">Tools currently being evaluated &#8212; each chip = a comparison pattern found in data</div><div class="chips" id="tool-chips"></div></div>
-    <div class="card panel"><h3>Tool Ecosystem &#8212; Mention Frequency</h3><div class="ps">Most-referenced tools across all 7 use case datasets</div><div class="blist" id="tools-list"></div></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Gap / Unmet Need</th><th>Signal</th><th>Relevant Roles</th><th>Current Solutions</th><th>Size</th><th>Priority</th></tr></thead>
+      <tbody id="gap-table"></tbody>
+    </table>
   </div>
 </section>
+
+<!-- ROLE COMPARE -->
+<section id="compare">
+  <div class="eyebrow">Role Comparison Layer <span class="n">07</span></div>
+  <h2>How the five roles differ on key signals</h2>
+  <p class="sub">The same signals measured independently per role &#8212; revealing which role is most anxious, most AI-forward, and most aligned with Swan.</p>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card panel">
+      <h3>Cost &amp; ROI Anxiety by Role</h3>
+      <div class="ps">% of role posts mentioning cost or ROI concerns</div>
+      <div class="cwrap" style="height:240px"><canvas id="costByRole"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Intent Signal Demand by Role</h3>
+      <div class="ps">% of role posts demanding real-time buying signal features</div>
+      <div class="cwrap" style="height:240px"><canvas id="intentByRole"></canvas></div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card panel">
+      <h3>AI Skepticism Level by Role</h3>
+      <div class="ps">% of role posts expressing AI hype or output quality skepticism</div>
+      <div class="cwrap" style="height:240px"><canvas id="skepticByRole"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Swan-Relevant Signal by Role</h3>
+      <div class="ps">% of role posts containing workflow automation, agentic GTM, or signal-to-action signals</div>
+      <div class="cwrap" style="height:240px"><canvas id="swanByRole"></canvas></div>
+    </div>
+  </div>
+  <div class="card panel">
+    <h3>Multi-Signal Radar &#8212; All Roles vs All Dimensions</h3>
+    <div class="ps">Which roles are hottest on each signal dimension simultaneously</div>
+    <div class="cwrap" style="height:320px"><canvas id="radarChart"></canvas></div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="eyebrow">Tool Ecosystem by Role <span class="n">08</span></div>
+  <h2>Which tools each role references most</h2>
+  <p class="sub">Top tool mentions per role &#8212; showing the competitive landscape each persona lives in and where Swan needs to be present.</p>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card panel">
+      <h3>Top Tools Mentioned &#8212; by Role</h3>
+      <div class="ps">% of role posts mentioning each tool</div>
+      <div class="cwrap" style="height:300px"><canvas id="toolsGrouped"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Tool Ownership by Role</h3>
+      <div class="ps">Each role's tool stack &#8212; who owns which category</div>
+      <div class="tool-role-grid" id="tool-role-cards"></div>
+    </div>
+  </div>
+  <div class="card panel">
+    <h3>Top Subreddits &#8212; Where Each Role Lives</h3>
+    <div class="ps">Community distribution across all 2,147 posts</div>
+    <div class="blist" id="subreddit-list"></div>
+  </div>
+</section>
+
+<!-- SENTIMENT -->
 <section id="sentiment">
   <div class="eyebrow">Sentiment Landscape <span class="n">09</span></div>
-  <h2>How the market feels &#8212; by source</h2>
-  <p class="sub">Sentiment classified independently across post titles, bodies, and full comment threads.</p>
+  <h2>How each role feels &#8212; and how that shifts by source</h2>
+  <p class="sub">Sentiment classified independently across titles, bodies, and comments &#8212; and broken out per role.</p>
   <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Overall Sentiment Mix</h3><div class="ps">Across all 20,842 data points (titles + bodies + comments)</div><div class="cwrap" style="height:250px"><canvas id="sentimentDonut"></canvas></div></div>
-    <div class="card panel"><h3>Sentiment by Source</h3><div class="ps">How tone differs across titles, bodies, and comment threads</div><div class="cwrap" style="height:250px"><canvas id="sentimentGrouped"></canvas></div></div>
+    <div class="card panel">
+      <h3>Overall Sentiment Mix</h3>
+      <div class="ps">Across all 12,893 total data points (posts + comments)</div>
+      <div class="cwrap" style="height:250px"><canvas id="sentimentDonut"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Sentiment by Source</h3>
+      <div class="ps">Titles vs Bodies vs Comments &#8212; how tone shifts by format</div>
+      <div class="cwrap" style="height:250px"><canvas id="sentimentBySrc"></canvas></div>
+    </div>
   </div>
   <div class="grid g2" style="margin-bottom:14px">
-    <div class="card panel"><h3>Content Category Distribution</h3><div class="ps">How posts and comments classify by intent and content type</div><div class="cwrap" style="height:250px"><canvas id="contentPie"></canvas></div></div>
-    <div class="card panel"><h3>Category Split by Source</h3><div class="ps">Stacked view &#8212; Titles vs Bodies vs Comments</div><div class="cwrap" style="height:250px"><canvas id="contentStacked"></canvas></div></div>
+    <div class="card panel">
+      <h3>Positive Sentiment by Role</h3>
+      <div class="ps">Which roles express most optimism in their posts and comments</div>
+      <div class="cwrap" style="height:220px"><canvas id="posByRole"></canvas></div>
+    </div>
+    <div class="card panel">
+      <h3>Negative Sentiment by Role</h3>
+      <div class="ps">Which roles carry most frustration and negativity</div>
+      <div class="cwrap" style="height:220px"><canvas id="negByRole"></canvas></div>
+    </div>
   </div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Source</th><th>Positive %</th><th>Negative %</th><th>Neutral %</th><th>Mixed %</th><th>Dominant</th></tr></thead><tbody id="sentiment-table"></tbody></table></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="tbl">
+      <thead><tr><th>Role</th><th>Positive %</th><th>Negative %</th><th>Neutral %</th><th>Mixed %</th><th>Dominant</th></tr></thead>
+      <tbody id="sentiment-table"></tbody>
+    </table>
+  </div>
 </section>
+
+<!-- TREND -->
 <section id="trend">
   <div class="eyebrow">Volume Momentum <span class="n">10</span></div>
-  <h2>How discussion volume has grown &#8212; month by month</h2>
-  <p class="sub">Monthly post volume per use case from Jan 2024 to Jun 2026 &#8212; showing which topics are gaining traction.</p>
-  <div class="card panel" style="margin-bottom:14px"><h3>Monthly Posts by Use Case (Jan 2024 &#8211; Jun 2026)</h3><div class="ps">Y axis = post count that month per use case keyword category</div><div class="cwrap" style="height:340px"><canvas id="trendChart"></canvas></div></div>
-  <div class="grid g3">
-    <div class="card panel"><h3>Top Subreddits</h3><div class="ps">Where this conversation concentrates</div><div class="blist" id="subreddit-list"></div></div>
-    <div class="card panel"><h3>Highest-Resonance Posts</h3><div class="ps">Most upvoted threads across all use cases</div><div id="top-posts-list"></div></div>
-    <div class="card panel"><h3>Use Case Engagement Share</h3><div class="ps">Avg upvotes per post &#8212; which topics resonate most</div><div class="cwrap" style="height:220px"><canvas id="ucEngDonut"></canvas></div></div>
+  <h2>Which roles are growing fastest in discussion</h2>
+  <p class="sub">Monthly post volume per role from Jan 2024 to Jun 2026 &#8212; showing trajectory, momentum, and which roles are exploding in attention.</p>
+  <div class="card panel" style="margin-bottom:14px">
+    <h3>Monthly Posts by Role (Jan 2024 &#8211; Jun 2026)</h3>
+    <div class="ps">Y axis = posts per month per role keyword category</div>
+    <div class="cwrap" style="height:340px"><canvas id="trendChart"></canvas></div>
+  </div>
+  <div class="grid g2">
+    <div class="card panel">
+      <h3>Highest-Resonance Posts</h3>
+      <div class="ps">Most upvoted threads across all five roles</div>
+      <div id="top-posts-list"></div>
+    </div>
+    <div class="card panel">
+      <h3>Content Category Distribution</h3>
+      <div class="ps">How posts and comments classify by intent &#8212; Titles vs Bodies vs Comments</div>
+      <div class="cwrap" style="height:240px"><canvas id="contentStacked"></canvas></div>
+    </div>
   </div>
 </section>
+
+<!-- VERDICTS -->
 <section id="verdicts">
   <div class="eyebrow">Strategic Verdicts <span class="n">11</span></div>
-  <h2>What this data means for Swan</h2>
-  <p class="sub">Six direct, evidence-backed strategic verdicts &#8212; every one tied to a specific pattern in the data.</p>
+  <h2>What this means for Swan &#8212; per role</h2>
+  <p class="sub">Six direct, evidence-backed verdicts &#8212; each tied to a role-specific signal found in the data.</p>
   <div class="grid g2" style="margin-bottom:14px">
     <div id="verdict-cards"></div>
-    <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>Verdict</th><th>Category</th><th>Evidence</th><th>Action Required</th></tr></thead><tbody id="verdict-table"></tbody></table></div>
+    <div class="card" style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Verdict</th><th>Category</th><th>Evidence</th><th>Action Required</th></tr></thead>
+        <tbody id="verdict-table"></tbody>
+      </table>
+    </div>
   </div>
 </section>
+
 </main>
-<footer><b>Methodology.</b> 2,563 Reddit posts and 18,279 comments across 7 use case keyword categories were analyzed. Signals extracted via pattern matching across post titles, bodies, and full comment trees including nested replies. Sentiment and content classifications use lexicon-based scoring and are directional. All quantities expressed as percentages. Built for Swan &middot; getswan.com</footer>
+<footer><b>Methodology.</b> 2,147 Reddit posts and 10,746 comments across 5 GTM role keyword categories were analyzed: AI SDR, Demand Gen, GTM Engineering, RevOps, and Sales Operations. Signals extracted via pattern matching across post titles, bodies, and full nested comment trees. Sentiment and complaint classifications use lexicon-based scoring and are directional. All quantities expressed as percentages. Built for Swan &middot; getswan.com</footer>
 <script>
 const D = {
   "HERO": [
     {
       "k": "Top Complaint",
-      "v": "Cost & Pricing",
-      "d": "Appears in 53% of all discussions",
+      "v": "Cost & ROI Uncertainty",
+      "d": "Appears in 26.6% of all role discussions",
       "cls": "accent"
     },
     {
-      "k": "Top Feature Demand",
-      "v": "Workflow Automation",
-      "d": "35.7% want no-code signal-to-action",
+      "k": "Most Discussed Role",
+      "v": "Sales Operations",
+      "d": "Highest post volume — 31.3% of all posts",
       "cls": "warn-accent"
     },
     {
-      "k": "Biggest Gap",
-      "v": "Signal to Action, No Code",
-      "d": "High signal, no clear market winner",
+      "k": "Fastest Growing",
+      "v": "GTM Engineering",
+      "d": "76 posts in Jun 2026 alone — explosive growth",
+      "cls": "pos-accent"
+    },
+    {
+      "k": "Hottest Debate",
+      "v": "AI Replacing SDRs",
+      "d": "56% of AI SDR posts debate job displacement",
       "cls": "neg-accent"
     },
     {
-      "k": "Dominant Buyer Stage",
-      "v": "Evaluation",
-      "d": "31.8% actively comparing tools",
+      "k": "Top Feature Demand",
+      "v": "Real-Time Intent Signals",
+      "d": "9.5% demand — highest of any feature",
       "cls": "blue-accent"
-    },
-    {
-      "k": "Fastest Growing Topic",
-      "v": "AI Workflow Automation",
-      "d": "42.4 avg upvotes — highest engagement",
-      "cls": "pos-accent"
     }
   ],
   "SNAPSHOT": [
     {
       "dim": "Top Complaint",
-      "signal": "Cost & Pricing",
-      "pct": "53.1%",
+      "signal": "Cost & ROI Uncertainty",
+      "pct": "26.6%",
       "ev": "Strong",
-      "impl": "Lead with transparent, startup-friendly pricing"
+      "impl": "Every role asks whether AI tools actually justify their cost"
+    },
+    {
+      "dim": "Dominant Fear",
+      "signal": "AI Replacing Human SDRs",
+      "pct": "56% of AI SDR",
+      "ev": "Strong",
+      "impl": "Job displacement anxiety is highest in AI SDR discussions"
     },
     {
       "dim": "Top Feature Demand",
-      "signal": "No-Code Workflow Automation",
-      "pct": "35.7%",
+      "signal": "Real-Time Intent Signals",
+      "pct": "9.5%",
       "ev": "Strong",
-      "impl": "Prompt-to-pipeline is the unoccupied position"
+      "impl": "All roles want to act on buying signals — not just collect them"
     },
     {
-      "dim": "Biggest Market Gap",
-      "signal": "Signal to Action Without Code",
+      "dim": "Biggest Pain",
+      "signal": "Quota Attainment Declining",
+      "pct": "6.4%",
+      "ev": "Strong",
+      "impl": "Sales Ops and RevOps feel quota pressure acutely"
+    },
+    {
+      "dim": "Market Gap",
+      "signal": "Unified Revenue Ops Platform",
       "pct": "High",
       "ev": "Strong",
-      "impl": "No tool connects intent signal to outreach in one flow"
+      "impl": "No tool connects signal to pipeline action in one place"
     },
     {
-      "dim": "Key Objection",
-      "signal": "Data Privacy / Scraping Ethics",
-      "pct": "17.0%",
+      "dim": "Swan Fit Signal",
+      "signal": "GTM Engineering is the bullseye",
+      "pct": "8.7%",
       "ev": "Strong",
-      "impl": "Compliance narrative is table stakes for credibility"
-    },
-    {
-      "dim": "Top Pain Point",
-      "signal": "Cannot Find Accurate Contact Data",
-      "pct": "14.1%",
-      "ev": "Strong",
-      "impl": "Data quality trust is a major purchase-blocker"
-    },
-    {
-      "dim": "Audience Signal",
-      "signal": "Founders and Agencies dominate",
-      "pct": "57.0%",
-      "ev": "Strong",
-      "impl": "ICP is not enterprise — adjust positioning accordingly"
+      "impl": "GTM Engineers have the highest Swan-relevant signal of any role"
     }
   ],
-  "UC_DATA": [
+  "ROLE_DATA": [
     {
-      "uc": "AI-Powered Cold Outreach",
-      "pct": 26.2,
-      "upvotes": 36.1,
-      "comments": 7.9,
+      "role": "Sales Operations",
+      "pct": 31.3,
+      "upvotes": 8.6,
+      "comments": 4.6,
       "eng": "High",
-      "sr": "r/SaaS"
+      "sr": "r/SalesOperations",
+      "color": "#C75B39"
     },
     {
-      "uc": "AI Sales Workflow Automation",
-      "pct": 24.4,
-      "upvotes": 42.4,
-      "comments": 8.9,
+      "role": "GTM Engineering",
+      "pct": 20.9,
+      "upvotes": 10.5,
+      "comments": 5.5,
       "eng": "Highest",
-      "sr": "r/n8n"
+      "sr": "r/gtmengineering",
+      "color": "#2A66F6"
     },
     {
-      "uc": "Contact Data Enrichment",
-      "pct": 16.9,
-      "upvotes": 20.5,
-      "comments": 6.1,
+      "role": "RevOps",
+      "pct": 19.6,
+      "upvotes": 7.2,
+      "comments": 4.0,
       "eng": "Med",
-      "sr": "r/SaaS"
+      "sr": "r/revops",
+      "color": "#3F9D6B"
     },
     {
-      "uc": "Automated Lead Qualification",
-      "pct": 14.3,
-      "upvotes": 27.1,
-      "comments": 6.2,
-      "eng": "Med",
-      "sr": "r/AI_Agents"
+      "role": "AI SDR",
+      "pct": 19.0,
+      "upvotes": 10.9,
+      "comments": 6.5,
+      "eng": "Highest",
+      "sr": "r/AI_Sales",
+      "color": "#D4900A"
     },
     {
-      "uc": "Intent-Based Prospecting",
-      "pct": 9.2,
-      "upvotes": 27.0,
-      "comments": 6.7,
-      "eng": "Med",
-      "sr": "r/b2bmarketing"
-    },
-    {
-      "uc": "AI ABM Targeting",
-      "pct": 4.9,
-      "upvotes": 6.2,
-      "comments": 3.2,
+      "role": "Demand Gen",
+      "pct": 9.3,
+      "upvotes": 5.7,
+      "comments": 4.4,
       "eng": "Low",
-      "sr": "r/b2bmarketing"
-    },
-    {
-      "uc": "Signal-Based Outbound",
-      "pct": 4.0,
-      "upvotes": 7.7,
-      "comments": 4.1,
-      "eng": "Low",
-      "sr": "r/gtmengineering"
+      "sr": "r/gtmengineering",
+      "color": "#9B59B6"
     }
   ],
   "COMPLAINTS": [
     {
-      "cat": "Cost & Pricing",
-      "pct": 53.1,
-      "src": "Mixed",
+      "cat": "Cost & ROI Uncertainty",
+      "pct": 26.6,
       "sev": "High",
-      "signal": "Startup pricing anxiety, ROI uncertainty, and tool affordability gaps dominate"
+      "src": "Mixed",
+      "topRole": "Demand Gen",
+      "topPct": 36.0,
+      "signal": "Every role questions whether AI tools justify spend — Demand Gen feels it hardest"
     },
     {
-      "cat": "Generic / Impersonal Messaging",
-      "pct": 35.5,
-      "src": "Mixed",
+      "cat": "Generic Spray-and-Pray Outreach",
+      "pct": 12.2,
       "sev": "High",
-      "signal": "AI making spam faster, not smarter — community calls messaging robotic and copy-paste"
+      "src": "Mixed",
+      "topRole": "AI SDR",
+      "topPct": 29.2,
+      "signal": "AI SDRs dominate this complaint — volume still wins over quality in practice"
     },
     {
-      "cat": "Spam & Volume-Based Outreach",
-      "pct": 29.5,
-      "src": "Mixed",
+      "cat": "AI Replacing Human SDRs",
+      "pct": 11.7,
       "sev": "High",
-      "signal": "Spray-and-pray still dominant despite AI — buyers pushing back hard in comments"
+      "src": "Title, Body",
+      "topRole": "AI SDR",
+      "topPct": 56.0,
+      "signal": "The single biggest fear in the AI SDR community — existential role anxiety"
     },
     {
-      "cat": "AI Hype vs Reality",
-      "pct": 21.7,
-      "src": "Mixed",
+      "cat": "AI Hype vs Real Output",
+      "pct": 8.7,
       "sev": "High",
-      "signal": "AI promises not matching output quality — overpromised and underdelivered"
-    },
-    {
-      "cat": "Low Reply / Conversion Rates",
-      "pct": 19.7,
       "src": "Mixed",
-      "sev": "High",
-      "signal": "Reply rates publicly questioned; cold email effectiveness debated community-wide"
-    },
-    {
-      "cat": "Deliverability Issues",
-      "pct": 14.8,
-      "src": "Body, Comment",
-      "sev": "Med",
-      "signal": "Domain reputation, spam folders, and blacklisting discussed across email threads"
-    },
-    {
-      "cat": "Compliance & Legal Concerns",
-      "pct": 12.6,
-      "src": "Mixed",
-      "sev": "Med",
-      "signal": "GDPR, CAN-SPAM anxiety — especially in EU-focused and agency posts"
+      "topRole": "AI SDR",
+      "topPct": 18.2,
+      "signal": "AI SDR community is most skeptical of AI quality claims — hallucinations cited"
     },
     {
       "cat": "Poor Data Quality",
-      "pct": 12.1,
-      "src": "Mixed",
+      "pct": 6.2,
       "sev": "Med",
-      "signal": "Stale contacts, wrong emails, bounced data — trust in data providers broadly low"
+      "src": "Mixed",
+      "topRole": "RevOps",
+      "topPct": 10.5,
+      "signal": "RevOps owns the data problem — dirty CRM and bad contacts block everything"
     },
     {
-      "cat": "Tool Complexity & Integration",
-      "pct": 6.8,
-      "src": "Mixed",
+      "cat": "Attribution Problems",
+      "pct": 5.0,
       "sev": "Med",
-      "signal": "Complex setup, weak CRM integration, steep learning curves cited repeatedly"
+      "src": "Mixed",
+      "topRole": "Demand Gen",
+      "topPct": 10.5,
+      "signal": "Demand Gen cannot prove pipeline contribution — multi-touch credit wars persist"
     },
     {
-      "cat": "Lead Quality Problems",
-      "pct": 2.7,
+      "cat": "Sales and Marketing Misalignment",
+      "pct": 4.5,
+      "sev": "Med",
       "src": "Mixed",
+      "topRole": "RevOps",
+      "topPct": 6.7,
+      "signal": "RevOps sits in the middle of S&M wars — handoff failures are the most cited issue"
+    },
+    {
+      "cat": "CRM Mess / Tech Debt",
+      "pct": 2.9,
+      "sev": "Med",
+      "src": "Mixed",
+      "topRole": "RevOps",
+      "topPct": 6.7,
+      "signal": "RevOps inherits years of CRM chaos — adoption and data hygiene are chronic"
+    },
+    {
+      "cat": "Lack of Qualified Leads",
+      "pct": 1.5,
       "sev": "Low",
-      "signal": "Unqualified or irrelevant leads wasting sales team time"
+      "src": "Mixed",
+      "topRole": "Demand Gen",
+      "topPct": 4.0,
+      "signal": "Demand Gen owns lead quality concern — MQL vs SQL debate resurfaces constantly"
+    },
+    {
+      "cat": "Tool Overload / Stack Fatigue",
+      "pct": 0.6,
+      "sev": "Low",
+      "src": "Mixed",
+      "topRole": "AI SDR",
+      "topPct": 1.0,
+      "signal": "Stitching too many tools together — especially apparent in GTM Engineering threads"
     }
   ],
   "FEATURES": [
     {
-      "feat": "Workflow Automation (No-Code)",
-      "pct": 35.7,
+      "feat": "Real-Time Intent & Buying Signals",
+      "pct": 9.5,
       "src": "Mixed",
       "str": "High",
       "exists": "Partial",
-      "fit": "Core Swan feature"
+      "fit": "Core Swan capability",
+      "topRole": "AI SDR"
     },
     {
-      "feat": "ICP Definition & Filtering",
-      "pct": 26.4,
-      "src": "Mixed",
-      "str": "High",
-      "exists": "Partial",
-      "fit": "Direct Swan use case"
-    },
-    {
-      "feat": "Real-Time Intent Signals",
-      "pct": 24.3,
-      "src": "Mixed",
-      "str": "High",
-      "exists": "Partial",
-      "fit": "Core Swan feature"
-    },
-    {
-      "feat": "Better Lead Scoring / Qual.",
-      "pct": 24.3,
-      "src": "Mixed",
-      "str": "High",
-      "exists": "Partial",
-      "fit": "Direct Swan use case"
-    },
-    {
-      "feat": "Waterfall Data Enrichment",
-      "pct": 15.2,
+      "feat": "Contact Data Enrichment",
+      "pct": 3.6,
       "src": "Mixed",
       "str": "High",
       "exists": "Yes",
-      "fit": "Supported via integrations"
+      "fit": "Supported via integrations",
+      "topRole": "GTM Engineering"
     },
     {
-      "feat": "AI Follow-Up Sequences",
-      "pct": 11.4,
+      "feat": "No-Code Workflow Automation",
+      "pct": 3.5,
+      "src": "Mixed",
+      "str": "High",
+      "exists": "Partial",
+      "fit": "Core Swan feature",
+      "topRole": "GTM Engineering"
+    },
+    {
+      "feat": "Multi-Channel Sequence Automation",
+      "pct": 2.7,
       "src": "Mixed",
       "str": "Med",
       "exists": "Partial",
-      "fit": "Swan workflow automation"
+      "fit": "Swan outreach workflows",
+      "topRole": "AI SDR"
     },
     {
-      "feat": "Multi-Channel Orchestration",
-      "pct": 8.6,
+      "feat": "Sales Coaching / AI Onboarding",
+      "pct": 2.3,
+      "src": "Mixed",
+      "str": "Med",
+      "exists": "Partial",
+      "fit": "Roadmap opportunity",
+      "topRole": "AI SDR"
+    },
+    {
+      "feat": "Better CRM Automation",
+      "pct": 1.4,
+      "src": "Mixed",
+      "str": "Med",
+      "exists": "Partial",
+      "fit": "RevOps use case",
+      "topRole": "RevOps"
+    },
+    {
+      "feat": "Pipeline Forecasting / AI Insights",
+      "pct": 1.4,
       "src": "Body, Comment",
       "str": "Med",
       "exists": "Partial",
-      "fit": "Roadmap opportunity"
+      "fit": "RevOps + Sales Ops",
+      "topRole": "RevOps"
     },
     {
-      "feat": "Native CRM Integration",
-      "pct": 7.1,
+      "feat": "AI Lead Qualification",
+      "pct": 1.3,
       "src": "Mixed",
       "str": "Med",
-      "exists": "Yes",
-      "fit": "HubSpot + Salesforce"
+      "exists": "Partial",
+      "fit": "Core Swan use case",
+      "topRole": "AI SDR"
+    },
+    {
+      "feat": "Unified GTM Dashboard / Reporting",
+      "pct": 1.1,
+      "src": "Mixed",
+      "str": "Low",
+      "exists": "Partial",
+      "fit": "Future roadmap",
+      "topRole": "RevOps"
     },
     {
       "feat": "AI Personalization at Scale",
-      "pct": 3.4,
-      "src": "Mixed",
-      "str": "Med",
-      "exists": "Partial",
-      "fit": "Core Swan differentiator"
-    },
-    {
-      "feat": "Competitor Monitoring Triggers",
       "pct": 0.9,
-      "src": "Body, Comment",
+      "src": "Mixed",
       "str": "Low",
       "exists": "Partial",
-      "fit": "Signal layer extension"
+      "fit": "Core Swan differentiator",
+      "topRole": "AI SDR"
     }
   ],
   "OBJECTIONS": [
     {
-      "obj": "Data Privacy / Scraping Ethics",
-      "pct": 17.0,
+      "obj": "Scraping & Privacy Ethics",
+      "pct": 5.2,
       "src": "Mixed",
       "target": "Practice / Tool",
-      "intensity": "Strong"
-    },
-    {
-      "obj": "AI SDRs Will Kill Cold Email",
-      "pct": 16.8,
-      "src": "Mixed",
-      "target": "AI Claim",
-      "intensity": "Strong"
+      "intensity": "Strong",
+      "topRole": "AI SDR"
     },
     {
       "obj": "AI Outputs Need Human Review",
-      "pct": 5.7,
+      "pct": 2.3,
       "src": "Mixed",
       "target": "AI Capability",
-      "intensity": "Moderate"
+      "intensity": "Moderate",
+      "topRole": "AI SDR"
     },
     {
-      "obj": "ROI Not Proven",
-      "pct": 5.5,
-      "src": "Mixed",
-      "target": "AI and Tools",
-      "intensity": "Strong"
-    },
-    {
-      "obj": "Market Saturation / Inbox Noise",
-      "pct": 3.7,
+      "obj": "Too Much Noise / Inbox Saturation",
+      "pct": 1.2,
       "src": "Mixed",
       "target": "Practice",
-      "intensity": "Moderate"
+      "intensity": "Moderate",
+      "topRole": "AI SDR"
     },
     {
-      "obj": "Personalization is Just Automation",
-      "pct": 3.4,
-      "src": "Mixed",
+      "obj": "AI Will Replace SDR Jobs",
+      "pct": 0.5,
+      "src": "Title, Body",
       "target": "AI Claim",
-      "intensity": "Strong"
+      "intensity": "Strong",
+      "topRole": "AI SDR"
     },
     {
-      "obj": "Too Much Tool Switching / Fatigue",
-      "pct": 1.3,
+      "obj": "ROI of AI Tools Unproven",
+      "pct": 0.3,
       "src": "Mixed",
-      "target": "Tool Ecosystem",
-      "intensity": "Mild"
+      "target": "AI & Tools",
+      "intensity": "Strong",
+      "topRole": "Demand Gen"
+    },
+    {
+      "obj": "Cold Outreach is Dying",
+      "pct": 0.1,
+      "src": "Title, Body",
+      "target": "AI Claim",
+      "intensity": "Strong",
+      "topRole": "AI SDR"
     }
   ],
   "OBJ_QUOTES": [
     {
-      "text": "Once we switched from activity-based scoring to intent signals, our close rate improved noticeably.",
-      "src": "Intent-Based Prospecting"
+      "text": "We use prospeo alongside our SDRs, not as a replacement. The AI BDR tools we tried were pretty bad on their own but the data is solid for helping humans do sales prospecting faster.",
+      "src": "AI SDR"
     },
     {
-      "text": "AI has just made spam faster. It has not fixed the underlying problem — wrong message, wrong person, wrong time.",
-      "src": "AI Cold Outreach"
+      "text": "There is no hack strategy that will work for a weak foundation. Automation enhances or amplifies the marketing — it does not replace strategy.",
+      "src": "GTM Engineering"
     },
     {
-      "text": "Three systems disagreed on the same account. The signal data is great in theory but then who do you trust?",
-      "src": "Signal-Based Outbound"
+      "text": "I had to double check everything the AI produced. Was a helpful tool for the math but AI still has a ways to go before I trust it fully on forecasting.",
+      "src": "Sales Operations"
     },
     {
-      "text": "Everyone uses Clay now. Everyone sends the same AI-personalized emails. We have looped back to noise.",
-      "src": "AI Workflow Automation"
+      "text": "Identifying pain points in your sales process is crucial before integrating AI tools. It is about finding the right tool for the job, not replacing everything at once.",
+      "src": "Sales Operations"
     }
   ],
   "PAIN": [
     {
-      "pain": "Cannot Find Accurate Contact Data",
-      "pct": 14.1,
+      "pain": "Quota Attainment Declining",
+      "pct": 6.4,
       "src": "Mixed",
+      "intensity": "High",
+      "stage": "Post-Purchase",
+      "topRole": "Sales Operations",
+      "opp": "Yes"
+    },
+    {
+      "pain": "No Single Source of Truth for Revenue",
+      "pct": 0.9,
+      "src": "Mixed",
+      "intensity": "High",
+      "stage": "Usage",
+      "topRole": "RevOps",
+      "opp": "Yes"
+    },
+    {
+      "pain": "Ramp Time Too Slow for New Reps",
+      "pct": 0.6,
+      "src": "Mixed",
+      "intensity": "Med",
+      "stage": "Usage",
+      "topRole": "Demand Gen",
+      "opp": "Yes"
+    },
+    {
+      "pain": "Hard to Hire and Train GTM Talent",
+      "pct": 0.4,
+      "src": "Mixed",
+      "intensity": "Med",
+      "stage": "Awareness",
+      "topRole": "AI SDR",
+      "opp": "Yes"
+    },
+    {
+      "pain": "AI Tools Overpromise and Underdeliver",
+      "pct": 0.2,
+      "src": "Body, Comment",
       "intensity": "High",
       "stage": "Evaluation",
+      "topRole": "AI SDR",
       "opp": "Yes"
     },
     {
-      "pain": "Sales and Marketing Misalignment",
-      "pct": 12.6,
-      "src": "Mixed",
-      "intensity": "High",
-      "stage": "Post-Purchase",
-      "opp": "Yes"
-    },
-    {
-      "pain": "Overwhelmed by Tool Options",
-      "pct": 4.8,
+      "pain": "Cannot Get Leadership Buy-In",
+      "pct": 0.2,
       "src": "Mixed",
       "intensity": "Med",
-      "stage": "Awareness",
+      "stage": "Evaluation",
+      "topRole": "Sales Operations",
       "opp": "Yes"
     },
     {
-      "pain": "No Time to Build Workflows",
-      "pct": 3.9,
-      "src": "Body, Comment",
-      "intensity": "High",
-      "stage": "Usage",
-      "opp": "Yes"
-    },
-    {
-      "pain": "Inability to Scale Personalization",
-      "pct": 2.0,
+      "pain": "Tech Stack Not Integrated",
+      "pct": 0.2,
       "src": "Mixed",
       "intensity": "High",
       "stage": "Usage",
-      "opp": "Yes"
-    },
-    {
-      "pain": "Outbound Feels Broken / Dead",
-      "pct": 1.0,
-      "src": "Title, Body",
-      "intensity": "High",
-      "stage": "Post-Purchase",
-      "opp": "Yes"
-    },
-    {
-      "pain": "Unclear ICP Definition",
-      "pct": 0.5,
-      "src": "Body, Comment",
-      "intensity": "Med",
-      "stage": "Awareness",
+      "topRole": "RevOps",
       "opp": "Yes"
     }
   ],
@@ -659,380 +901,356 @@ const D = {
     {
       "stage": "Awareness",
       "items": [
-        "Overwhelmed by Tool Options",
-        "Unclear ICP Definition"
+        "Hard to Hire and Train GTM Talent"
       ],
       "color": "#D4900A"
     },
     {
       "stage": "Evaluation",
       "items": [
-        "Cannot Find Accurate Contact Data"
+        "AI Tools Overpromise and Underdeliver",
+        "Leadership Buy-In"
       ],
-      "color": "#2A66F6"
+      "color": "#9B59B6"
     },
     {
       "stage": "Usage",
       "items": [
-        "No Time to Build Workflows",
-        "Cannot Scale Personalization"
+        "No Single Source of Truth",
+        "Tech Stack Not Integrated",
+        "Slow Rep Ramp"
       ],
       "color": "#C75B39"
     },
     {
       "stage": "Post-Purchase",
       "items": [
-        "Sales and Marketing Misalignment",
-        "Outbound Feels Broken"
+        "Quota Attainment Declining"
       ],
       "color": "#CB5346"
     }
   ],
   "PAIN_QUOTES": [
     {
-      "text": "We switched tools three times this year looking for accurate phone numbers. Every provider has the same stale data.",
-      "src": "Contact Data Enrichment"
+      "text": "The AI tools we evaluated demo great and then fall apart in production. The gap between what they show and what gets delivered is massive.",
+      "src": "AI SDR"
     },
     {
-      "text": "Sales says marketing sends garbage leads. Marketing says sales never follows up. The handoff is always the problem.",
-      "src": "Lead Qualification"
+      "text": "Our biggest problem is that data lives in five different places. RevOps is supposed to be the single source of truth but nobody updates the CRM consistently.",
+      "src": "RevOps"
     },
     {
-      "text": "I do not have 40 hours to stitch together n8n + Clay + Apollo just to send 200 targeted emails.",
-      "src": "AI Workflow Automation"
+      "text": "Quota setting is broken. It is based on last year's numbers with a multiplier. Nobody actually models territory capacity or realistic ramp curves.",
+      "src": "Sales Operations"
     },
     {
-      "text": "Personalization at scale is a lie unless you have a system. Most teams just have vibes and a spreadsheet.",
-      "src": "AI Cold Outreach"
+      "text": "GTM Engineers are in demand but nobody agrees on what the role actually is. Are we ops? Are we engineers? Are we growth? The job title means something different everywhere.",
+      "src": "GTM Engineering"
     }
   ],
   "GAPS": [
     {
-      "gap": "Prompt-to-Pipeline (No-Code GTM Automation)",
+      "gap": "Unified Revenue Ops Platform (no stitching)",
       "strength": "High",
       "src": "Mixed",
-      "current": "Clay + n8n (complex, dev-heavy)",
+      "current": "Clay + n8n + CRM (fragmented)",
       "size": "Large",
-      "priority": "High"
+      "priority": "High",
+      "roles": "RevOps, GTM Eng"
     },
     {
-      "gap": "Affordable All-in-One GTM for SMBs",
+      "gap": "Demand Gen for AI-Native Buying Journeys",
       "strength": "High",
       "src": "Mixed",
-      "current": "Clay, Apollo (expensive for small teams)",
+      "current": "SEO, ads, content (pre-AI)",
       "size": "Large",
-      "priority": "High"
+      "priority": "High",
+      "roles": "Demand Gen"
     },
     {
-      "gap": "Reliable Verified B2B Contact Data",
+      "gap": "AI SDR That Qualifies, Not Just Contacts",
       "strength": "High",
       "src": "Mixed",
-      "current": "ZoomInfo, Apollo (low trust, high cost)",
+      "current": "11x, Artisan (contact-focused)",
       "size": "Large",
-      "priority": "High"
+      "priority": "High",
+      "roles": "AI SDR"
     },
     {
-      "gap": "Signal to Personalized Outreach, One Workflow",
+      "gap": "Real-Time Pipeline Health Visibility",
       "strength": "High",
       "src": "Mixed",
-      "current": "Stitched tools — fragile, no single owner",
-      "size": "Large",
-      "priority": "High"
+      "current": "Gong, Clari (partial)",
+      "size": "Med",
+      "priority": "High",
+      "roles": "RevOps, Sales Ops"
     },
     {
-      "gap": "AI That Explains Qualification Reasoning",
+      "gap": "Role-Specific AI Tooling (not generic)",
       "strength": "Med",
       "src": "Body, Comment",
-      "current": "None adequate — all black-box",
+      "current": "Generic AI tools only",
       "size": "Med",
-      "priority": "High"
+      "priority": "High",
+      "roles": "All roles"
     },
     {
-      "gap": "SMB-Accessible ABM Targeting",
+      "gap": "AI-Assisted Quota and Territory Planning",
       "strength": "Med",
       "src": "Mixed",
-      "current": "Demandbase, 6sense (enterprise only)",
+      "current": "Excel, Anaplan (no AI)",
       "size": "Med",
-      "priority": "Med"
+      "priority": "Med",
+      "roles": "Sales Operations"
     }
   ],
-  "SIGNALS": [
+  "ROLE_COMPARISON": {
+    "labels": [
+      "AI SDR",
+      "Demand Gen",
+      "GTM Engineering",
+      "RevOps",
+      "Sales Operations"
+    ],
+    "costROI": [
+      18.7,
+      36.0,
+      22.3,
+      22.1,
+      27.3
+    ],
+    "intentSig": [
+      17.4,
+      3.0,
+      12.5,
+      9.5,
+      7.3
+    ],
+    "dataQuality": [
+      4.9,
+      3.0,
+      7.1,
+      10.5,
+      5.1
+    ],
+    "aiSkeptic": [
+      18.2,
+      6.0,
+      6.5,
+      5.7,
+      5.8
+    ],
+    "swanFit": [
+      5.2,
+      0.5,
+      8.7,
+      7.8,
+      4.5
+    ]
+  },
+  "TOOL_MENTIONS": {
+    "AI SDR": [
+      {
+        "t": "Outreach",
+        "p": 51
+      },
+      {
+        "t": "LinkedIn",
+        "p": 42
+      },
+      {
+        "t": "Apollo",
+        "p": 22
+      },
+      {
+        "t": "Clay",
+        "p": 21
+      },
+      {
+        "t": "Instantly",
+        "p": 14
+      }
+    ],
+    "Demand Gen": [
+      {
+        "t": "LinkedIn",
+        "p": 17
+      },
+      {
+        "t": "Outreach",
+        "p": 9
+      },
+      {
+        "t": "HubSpot",
+        "p": 2
+      },
+      {
+        "t": "Clay",
+        "p": 2
+      },
+      {
+        "t": "6sense",
+        "p": 2
+      }
+    ],
+    "GTM Engineering": [
+      {
+        "t": "Clay",
+        "p": 34
+      },
+      {
+        "t": "LinkedIn",
+        "p": 32
+      },
+      {
+        "t": "Outreach",
+        "p": 25
+      },
+      {
+        "t": "Claude",
+        "p": 18
+      },
+      {
+        "t": "HubSpot",
+        "p": 15
+      }
+    ],
+    "RevOps": [
+      {
+        "t": "HubSpot",
+        "p": 33
+      },
+      {
+        "t": "Salesforce",
+        "p": 31
+      },
+      {
+        "t": "LinkedIn",
+        "p": 22
+      },
+      {
+        "t": "Clay",
+        "p": 17
+      },
+      {
+        "t": "Claude",
+        "p": 12
+      }
+    ],
+    "Sales Operations": [
+      {
+        "t": "Salesforce",
+        "p": 29
+      },
+      {
+        "t": "LinkedIn",
+        "p": 21
+      },
+      {
+        "t": "Outreach",
+        "p": 21
+      },
+      {
+        "t": "HubSpot",
+        "p": 17
+      },
+      {
+        "t": "Claude",
+        "p": 8
+      }
+    ]
+  },
+  "SENTIMENT_BY_ROLE": [
     {
-      "sig": "Funding / Hiring Signal",
-      "pct": 21.6,
-      "icon": "💼",
-      "color": "#2A66F6"
+      "role": "AI SDR",
+      "pos": 20.3,
+      "neg": 5.6,
+      "neu": 70.4,
+      "mix": 3.7
     },
     {
-      "sig": "Job Change Signal",
-      "pct": 11.8,
-      "icon": "🔄",
-      "color": "#C75B39"
+      "role": "Demand Gen",
+      "pos": 23.5,
+      "neg": 4.2,
+      "neu": 69.1,
+      "mix": 3.2
     },
     {
-      "sig": "LinkedIn Engagement Signal",
-      "pct": 5.2,
-      "icon": "🔗",
-      "color": "#0077B5"
+      "role": "GTM Engineering",
+      "pos": 22.3,
+      "neg": 3.6,
+      "neu": 71.4,
+      "mix": 2.7
     },
     {
-      "sig": "Website Visitor Signal",
-      "pct": 3.2,
-      "icon": "👁",
-      "color": "#3F9D6B"
+      "role": "RevOps",
+      "pos": 24.2,
+      "neg": 3.6,
+      "neu": 68.7,
+      "mix": 3.4
     },
     {
-      "sig": "Competitor Mention Signal",
-      "pct": 3.2,
-      "icon": "⚔",
-      "color": "#CB5346"
-    },
-    {
-      "sig": "Content Engagement Signal",
-      "pct": 2.4,
-      "icon": "📄",
-      "color": "#D4900A"
+      "role": "Sales Operations",
+      "pos": 23.6,
+      "neg": 3.5,
+      "neu": 70.3,
+      "mix": 2.6
     }
   ],
-  "SIG_QUOTES": [
-    {
-      "text": "Once we switched from activity-based scoring to intent signals, our close rate improved noticeably.",
-      "src": "Intent-Based Prospecting"
-    },
-    {
-      "text": "GDELT for intent signals is clutch for SDR stuff. The trick is filtering noise from actual buying behavior.",
-      "src": "Intent-Based Prospecting"
-    },
-    {
-      "text": "There is an 8th signal worth adding: context assembly before inbound ops. Trigger is a Slack message, output is CRM context pre-assembled.",
-      "src": "Signal-Based Outbound"
-    },
-    {
-      "text": "The hiring signal plus LinkedIn content combo is where we find the highest-intent accounts every single time.",
-      "src": "Signal-Based Outbound"
-    }
-  ],
-  "JTBD": [
-    {
-      "job": "Get more replies",
-      "pct": 16.4
-    },
-    {
-      "job": "Reduce time on manual tasks",
-      "pct": 16.0
-    },
-    {
-      "job": "Find qualified leads faster",
-      "pct": 6.0
-    },
-    {
-      "job": "Write better outreach messages",
-      "pct": 5.3
-    },
-    {
-      "job": "Qualify leads without human review",
-      "pct": 1.6
-    },
-    {
-      "job": "Understand what triggered a lead",
-      "pct": 1.5
-    },
-    {
-      "job": "Reach prospects before competitors",
-      "pct": 0.4
-    }
-  ],
-  "AUDIENCE": [
-    {
-      "aud": "Founder / Solo GTM",
-      "pct": 31.4
-    },
-    {
-      "aud": "Agency / Freelancer",
-      "pct": 25.6
-    },
-    {
-      "aud": "SDR / BDR",
-      "pct": 21.4
-    },
-    {
-      "aud": "RevOps",
-      "pct": 9.4
-    },
-    {
-      "aud": "Marketing / Demand Gen",
-      "pct": 9.3
-    },
-    {
-      "aud": "Sales Manager / VP",
-      "pct": 4.1
-    }
-  ],
-  "BUYER_STAGE": [
-    {
-      "stage": "Evaluation / Comparing",
-      "pct": 31.8
-    },
-    {
-      "stage": "Awareness / Discovery",
-      "pct": 21.5
-    },
-    {
-      "stage": "Decision / Buying Intent",
-      "pct": 21.4
-    },
-    {
-      "stage": "Post-Purchase / Using",
-      "pct": 1.4
-    }
-  ],
-  "TOOL_CHIPS": [
-    {
-      "name": "n8n",
-      "pct": "24.7%"
-    },
-    {
-      "name": "Apollo",
-      "pct": "24.0%"
-    },
-    {
-      "name": "HubSpot",
-      "pct": "19.2%"
-    },
-    {
-      "name": "Clay",
-      "pct": "18.9%"
-    },
-    {
-      "name": "Instantly",
-      "pct": "18.1%"
-    },
-    {
-      "name": "Claude",
-      "pct": "15.5%"
-    },
-    {
-      "name": "Salesforce",
-      "pct": "12.1%"
-    },
-    {
-      "name": "ChatGPT",
-      "pct": "11.8%"
-    },
-    {
-      "name": "Zapier",
-      "pct": "10.3%"
-    },
-    {
-      "name": "ZoomInfo",
-      "pct": "8.0%"
-    },
-    {
-      "name": "Sales Nav",
-      "pct": "7.2%"
-    },
-    {
-      "name": "Seamless.ai",
-      "pct": "6.4%"
-    }
-  ],
-  "TOOLS": [
-    {
-      "t": "n8n",
-      "pct": 24.7
-    },
-    {
-      "t": "Apollo",
-      "pct": 24.0
-    },
-    {
-      "t": "HubSpot",
-      "pct": 19.2
-    },
-    {
-      "t": "Clay",
-      "pct": 18.9
-    },
-    {
-      "t": "Instantly",
-      "pct": 18.1
-    },
-    {
-      "t": "Claude",
-      "pct": 15.5
-    },
-    {
-      "t": "Salesforce",
-      "pct": 12.1
-    },
-    {
-      "t": "ChatGPT",
-      "pct": 11.8
-    },
-    {
-      "t": "Zapier",
-      "pct": 10.3
-    },
-    {
-      "t": "ZoomInfo",
-      "pct": 8.0
-    }
-  ],
-  "SENTIMENT": {
+  "SENTIMENT_BY_SRC": {
     "titles": {
-      "pos": 8.3,
-      "neg": 2.7,
-      "neu": 88.9,
-      "mix": 0.1
+      "pos": 6.1,
+      "neg": 1.1,
+      "neu": 92.8,
+      "mix": 0.0
     },
     "bodies": {
-      "pos": 39.4,
-      "neg": 8.0,
-      "neu": 19.7,
-      "mix": 32.9
+      "pos": 35.8,
+      "neg": 5.2,
+      "neu": 49.4,
+      "mix": 9.6
     },
     "comments": {
-      "pos": 31.9,
-      "neg": 4.6,
-      "neu": 59.9,
-      "mix": 3.5
+      "pos": 23.3,
+      "neg": 4.5,
+      "neu": 69.8,
+      "mix": 2.4
     },
     "overall": {
-      "pos": 30.2,
-      "neg": 4.8,
-      "neu": 58.7,
-      "mix": 6.3
+      "pos": 22.7,
+      "neg": 4.1,
+      "neu": 70.2,
+      "mix": 3.1
     }
   },
-  "CONTENT_TITLE": {
-    "complaint": 1.5,
-    "feature": 0.5,
-    "objection": 0.8,
-    "frustration": 1.2,
-    "positive": 0.1,
-    "question": 27.0,
-    "sharing": 7.7,
-    "opinion": 61.1
-  },
-  "CONTENT_BODY": {
-    "complaint": 27.5,
-    "feature": 6.8,
-    "objection": 7.2,
-    "frustration": 6.5,
-    "positive": 4.1,
-    "question": 34.0,
-    "sharing": 3.5,
-    "opinion": 10.4
-  },
-  "CONTENT_COMMENT": {
-    "complaint": 5.4,
-    "feature": 1.6,
-    "objection": 2.1,
-    "frustration": 1.8,
-    "positive": 6.7,
-    "question": 25.3,
-    "sharing": 1.4,
-    "opinion": 55.8
+  "CONTENT_DIST": {
+    "title": {
+      "complaint": 0.8,
+      "feature": 0.3,
+      "objection": 0.2,
+      "sharing": 1.7,
+      "positive": 0.0,
+      "question": 45.3,
+      "opinion": 51.1
+    },
+    "body": {
+      "complaint": 1.8,
+      "feature": 1.2,
+      "objection": 0.3,
+      "sharing": 2.1,
+      "positive": 0.7,
+      "question": 77.7,
+      "opinion": 15.4
+    },
+    "comment": {
+      "complaint": 3.6,
+      "feature": 0.8,
+      "objection": 1.0,
+      "sharing": 1.7,
+      "positive": 2.9,
+      "question": 25.3,
+      "opinion": 61.0
+    }
   },
   "TREND_MONTHS": [
     "Jan 24",
@@ -1066,313 +1284,318 @@ const D = {
     "May 26",
     "Jun 26"
   ],
-  "TREND_DATASETS": [
+  "TREND_DATA": [
     {
-      "label": "AI Cold Outreach",
+      "label": "AI SDR",
       "data": [
-        2,
-        3,
-        8,
-        4,
+        0,
+        0,
+        1,
+        1,
+        1,
         1,
         0,
         1,
-        5,
-        4,
-        4,
-        5,
-        2,
-        9,
-        10,
-        15,
-        19,
-        17,
-        27,
-        33,
-        23,
-        18,
-        25,
-        23,
-        25,
-        38,
-        67,
-        80,
-        57,
-        60,
-        38
-      ],
-      "color": "#C75B39"
-    },
-    {
-      "label": "AI Workflow Automation",
-      "data": [
-        1,
-        2,
-        1,
-        2,
-        1,
         3,
-        1,
-        2,
-        2,
-        1,
+        3,
         4,
-        5,
-        1,
-        13,
+        3,
+        6,
         8,
+        9,
+        5,
+        12,
+        8,
+        10,
+        7,
         16,
-        12,
-        23,
-        23,
-        14,
-        24,
-        27,
-        29,
-        27,
-        45,
-        56,
-        68,
-        60,
-        78,
-        55
-      ],
-      "color": "#2A66F6"
-    },
-    {
-      "label": "Contact Data Enrichment",
-      "data": [
-        2,
-        1,
-        1,
-        4,
-        1,
-        1,
-        2,
-        4,
-        3,
-        3,
-        3,
-        2,
-        4,
-        8,
-        4,
-        7,
-        7,
-        12,
-        17,
-        6,
-        12,
-        19,
-        20,
-        14,
-        32,
-        41,
-        49,
-        46,
-        46,
-        35
-      ],
-      "color": "#3F9D6B"
-    },
-    {
-      "label": "Lead Qualification",
-      "data": [
-        0,
-        1,
-        0,
-        0,
-        0,
-        2,
-        2,
-        1,
-        1,
-        2,
-        2,
-        1,
-        3,
-        9,
-        8,
-        8,
-        6,
-        14,
-        17,
-        10,
-        17,
         15,
-        17,
-        17,
-        29,
-        36,
-        38,
-        29,
-        35,
-        25
+        21,
+        16,
+        18,
+        34,
+        48,
+        45,
+        55,
+        48
       ],
       "color": "#D4900A"
     },
     {
-      "label": "Intent Prospecting",
+      "label": "Demand Gen",
       "data": [
-        0,
-        0,
         1,
-        0,
+        3,
         1,
-        0,
-        1,
-        5,
-        2,
-        1,
-        2,
-        2,
-        0,
-        2,
-        6,
-        6,
         3,
         3,
-        7,
+        3,
         3,
         4,
+        2,
+        4,
+        3,
+        1,
+        4,
+        6,
+        4,
+        15,
         5,
-        5,
+        9,
+        7,
+        8,
+        2,
+        9,
         10,
-        21,
-        24,
-        32,
-        25,
-        22,
-        18
+        9,
+        8,
+        1,
+        8,
+        4,
+        12,
+        16
       ],
       "color": "#9B59B6"
+    },
+    {
+      "label": "GTM Engineering",
+      "data": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2,
+        1,
+        2,
+        3,
+        7,
+        8,
+        13,
+        16,
+        17,
+        22,
+        22,
+        18,
+        25,
+        31,
+        24,
+        56,
+        42,
+        51,
+        76
+      ],
+      "color": "#2A66F6"
+    },
+    {
+      "label": "RevOps",
+      "data": [
+        1,
+        2,
+        2,
+        6,
+        2,
+        1,
+        4,
+        0,
+        2,
+        6,
+        4,
+        2,
+        4,
+        7,
+        6,
+        7,
+        6,
+        6,
+        10,
+        10,
+        7,
+        8,
+        14,
+        15,
+        35,
+        23,
+        56,
+        51,
+        52,
+        38
+      ],
+      "color": "#3F9D6B"
+    },
+    {
+      "label": "Sales Operations",
+      "data": [
+        7,
+        13,
+        6,
+        6,
+        8,
+        9,
+        10,
+        10,
+        10,
+        9,
+        11,
+        8,
+        12,
+        14,
+        11,
+        8,
+        13,
+        8,
+        10,
+        2,
+        5,
+        8,
+        17,
+        27,
+        42,
+        51,
+        46,
+        65,
+        50,
+        46
+      ],
+      "color": "#C75B39"
     }
   ],
   "SUBREDDITS": [
     {
-      "sr": "r/SaaS",
-      "pct": 16.2
-    },
-    {
-      "sr": "r/n8n",
-      "pct": 12.1
-    },
-    {
-      "sr": "r/AI_Agents",
-      "pct": 7.8
-    },
-    {
-      "sr": "r/b2bmarketing",
-      "pct": 7.2
-    },
-    {
       "sr": "r/gtmengineering",
-      "pct": 5.0
+      "pct": 22.4
     },
     {
-      "sr": "r/Entrepreneur",
-      "pct": 4.1
+      "sr": "r/revops",
+      "pct": 17.9
     },
     {
-      "sr": "r/MarketingAutomation",
-      "pct": 4.0
+      "sr": "r/SalesOperations",
+      "pct": 14.7
     },
     {
       "sr": "r/sales",
-      "pct": 3.3
+      "pct": 9.0
     },
     {
-      "sr": "r/b2b_sales",
-      "pct": 3.0
+      "sr": "r/SaaS",
+      "pct": 7.5
     },
     {
-      "sr": "r/LeadGeneration",
-      "pct": 2.8
+      "sr": "r/AI_Sales",
+      "pct": 4.9
+    },
+    {
+      "sr": "r/PPC",
+      "pct": 3.1
+    },
+    {
+      "sr": "r/microsaas",
+      "pct": 1.8
+    },
+    {
+      "sr": "r/MarketingAutomation",
+      "pct": 1.5
     }
   ],
   "TOP_POSTS": [
     {
-      "title": "I spent $47k and 18 months building an AI startup. Brutal truth about why 90% fail.",
-      "up": 1839,
-      "uc": "AI Cold Outreach"
+      "title": "Apollo.io alternatives with better data quality in 2026? I switched 3 months ago and here's what happened",
+      "up": 300,
+      "role": "RevOps"
     },
     {
-      "title": "I run an AI automation agency (AAA). My honest overview and review of this business model.",
-      "up": 1666,
-      "uc": "AI Workflow"
+      "title": "Laid off today",
+      "up": 287,
+      "role": "GTM Engineering"
     },
     {
-      "title": "Stop building AI agents.",
-      "up": 1594,
-      "uc": "AI Workflow"
+      "title": "Dell is now 100% RTO, at least sales and sales operations",
+      "up": 279,
+      "role": "Sales Operations"
     },
     {
-      "title": "I scraped every AI automation job on Upwork for 6 months. Here is what 500+ showed.",
-      "up": 1250,
-      "uc": "Lead Qual"
+      "title": "A company just cut their entire 100-person inbound SDR team. Are we overreacting?",
+      "up": 212,
+      "role": "AI SDR"
     },
     {
-      "title": "I have been in AI automation since 2022. Most of you will not make it.",
-      "up": 921,
-      "uc": "AI Cold Outreach"
+      "title": "I spent almost a decade leading outbound teams, from first SDR hire to head of GTM. These are my lessons.",
+      "up": 203,
+      "role": "AI SDR"
+    },
+    {
+      "title": "The truth about B2B marketing...",
+      "up": 207,
+      "role": "Sales Operations"
     }
   ],
   "VERDICTS": [
     {
-      "v": "Prompt-to-pipeline is the unoccupied position",
-      "cat": "Market Gap",
-      "str": "Strong",
-      "src": "Mixed",
-      "action": "Position Swan as describe it, Swan deploys it — no-code GTM automation with zero stitching"
-    },
-    {
-      "v": "Cost is the #1 blocker — SMBs are priced out of GTM intelligence",
-      "cat": "Pricing Gap",
-      "str": "Strong",
-      "src": "Title + Comment",
-      "action": "Lead all messaging with transparent startup-friendly pricing — make affordability a feature"
-    },
-    {
-      "v": "Intent signals are discussed everywhere but nobody owns the narrative",
-      "cat": "Content Opportunity",
-      "str": "Strong",
-      "src": "Title + Body",
-      "action": "Publish intent signal education on Reddit — own the buying signal category organically"
-    },
-    {
-      "v": "Trust in AI outputs is low — human-in-the-loop is an active demand",
-      "cat": "Product Signal",
-      "str": "Strong",
-      "src": "Body + Comment",
-      "action": "Surface human review and approval gates visibly in Swan — make oversight a selling point"
-    },
-    {
-      "v": "Founders and agencies (57%) dominate — this is not an enterprise market",
+      "v": "GTM Engineering is Swan's clearest ICP signal",
       "cat": "ICP Signal",
       "str": "Strong",
-      "src": "Mixed",
-      "action": "Rewrite case studies and positioning around solo GTM operators and agency-scale workflows"
+      "src": "Role data",
+      "action": "Lead GTM Engineer targeting — 8.7% Swan-relevant signal, highest of all 5 roles"
     },
     {
-      "v": "Tool-stack fragmentation is exhausting buyers",
+      "v": "Every role cites cost and ROI as the #1 block — pricing is a weapon",
+      "cat": "Pricing Gap",
+      "str": "Strong",
+      "src": "Mixed",
+      "action": "Make pricing transparency and fast ROI visibility core to Swan's positioning"
+    },
+    {
+      "v": "AI SDR replacement anxiety is a recruiting opportunity, not a threat",
       "cat": "Positioning",
-      "str": "Moderate",
-      "src": "Comment",
-      "action": "Position Swan as the single orchestration layer, not another tool to plug in"
+      "str": "Strong",
+      "src": "AI SDR",
+      "action": "Frame Swan as human-augmentation not replacement — speak directly to SDR fears"
+    },
+    {
+      "v": "Demand Gen has no tool for AI-native buyer journeys",
+      "cat": "Market Gap",
+      "str": "Strong",
+      "src": "Demand Gen",
+      "action": "Build or surface Swan capability for AI search and LLM-discovery positioning"
+    },
+    {
+      "v": "RevOps and Sales Ops are drowning in fragmented data — not tools",
+      "cat": "Product Signal",
+      "str": "Strong",
+      "src": "RevOps, Sales Ops",
+      "action": "Position Swan as the signal-to-action unifier — one layer above the fragmentation"
+    },
+    {
+      "v": "Intent signals are the most demanded capability across all roles",
+      "cat": "Content Opportunity",
+      "str": "Strong",
+      "src": "Mixed",
+      "action": "Own the intent signal narrative on Reddit — publish role-specific signal playbooks"
     }
-  ]
+  ],
+  "ROLE_COLORS": {
+    "AI SDR": "#D4900A",
+    "Demand Gen": "#9B59B6",
+    "GTM Engineering": "#2A66F6",
+    "RevOps": "#3F9D6B",
+    "Sales Operations": "#C75B39"
+  }
 };
 
 const $ = (s,r=document)=>r.querySelector(s);
 const fmt = n=>Number(n).toLocaleString("en-US");
 Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
 Chart.defaults.color = "#8C8275";
-const C = {
-  swan:"#C75B39",pos:"#3F9D6B",neg:"#CB5346",
-  neu:"#D8D1C5",warn:"#D4900A",blue:"#2A66F6",
-  faint:"#B5AC9E",muted:"#8C8275",
-  uc:["#C75B39","#2A66F6","#3F9D6B","#D4900A","#9B59B6","#16A085","#E74C3C"],
-};
+
+const RC = ["#D4900A","#9B59B6","#2A66F6","#3F9D6B","#C75B39"]; // role colours
+const roleNames = D.ROLE_DATA.map(r=>r.role);
 
 // HERO
 $('#hero-stats').innerHTML = D.HERO.map(s=>`
@@ -1386,41 +1609,44 @@ $('#snapshot-table').innerHTML = D.SNAPSHOT.map(r=>`
   <td class="mono">${r.pct}</td><td><span class="badge b-high">${r.ev}</span></td>
   <td style="font-size:12.5px;color:var(--muted)">${r.impl}</td></tr>`).join('');
 
-// UC TABLE
-$('#uc-table').innerHTML = D.UC_DATA.map(r=>`
-  <tr><td style="font-weight:600">${r.uc}</td><td class="mono">${r.pct}%</td>
-  <td class="mono">${r.upvotes}</td><td class="mono">${r.comments}</td>
+// ROLE TABLE
+$('#role-table').innerHTML = D.ROLE_DATA.map((r,i)=>`
+  <tr><td><span class="dot" style="background:${RC[i]};margin-right:7px"></span><b>${r.role}</b></td>
+  <td class="mono">${r.pct}%</td><td class="mono">${r.upvotes}</td><td class="mono">${r.comments}</td>
   <td><span class="badge ${r.eng==='Highest'?'b-swan':r.eng==='High'?'b-high':r.eng==='Med'?'b-med':'b-low'}">${r.eng}</span></td>
   <td style="font-size:12px;color:var(--muted)">${r.sr}</td></tr>`).join('');
 
-new Chart($('#ucVolBar'),{type:'bar',
-  data:{labels:D.UC_DATA.map(r=>r.uc.replace('AI ','').replace('Automated ','')),
-    datasets:[{data:D.UC_DATA.map(r=>r.pct),backgroundColor:C.uc,borderRadius:6,borderSkipped:false}]},
+// ROLE VOL BAR
+new Chart($('#roleVolBar'),{type:'bar',
+  data:{labels:D.ROLE_DATA.map(r=>r.role),
+    datasets:[{data:D.ROLE_DATA.map(r=>r.pct),backgroundColor:RC,borderRadius:7,borderSkipped:false}]},
   options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y}%`}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
 
-new Chart($('#ucEngBar'),{type:'bar',
-  data:{labels:D.UC_DATA.map(r=>r.uc.replace('AI ','').replace('Automated ','').slice(0,18)),
+// ROLE ENG BAR
+new Chart($('#roleEngBar'),{type:'bar',
+  data:{labels:D.ROLE_DATA.map(r=>r.role),
     datasets:[
-      {label:'Avg Upvotes', data:D.UC_DATA.map(r=>r.upvotes),backgroundColor:C.swan+'CC',borderRadius:4,borderSkipped:false},
-      {label:'Avg Comments',data:D.UC_DATA.map(r=>r.comments),backgroundColor:C.blue+'CC',borderRadius:4,borderSkipped:false},
+      {label:'Avg Upvotes', data:D.ROLE_DATA.map(r=>r.upvotes), backgroundColor:RC.map(c=>c+'CC'),borderRadius:4,borderSkipped:false},
+      {label:'Avg Comments',data:D.ROLE_DATA.map(r=>r.comments),backgroundColor:RC.map(c=>c+'66'),borderRadius:4,borderSkipped:false},
     ]},
   options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:8}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#EBE4D9'},ticks:{font:{size:10,family:'JetBrains Mono'}}}}}});
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{font:{size:10,family:'JetBrains Mono'}}}}}});
 
-// COMPLAINTS
-$('#complaint-table').innerHTML = D.COMPLAINTS.map(r=>`
+// COMPLAINTS TABLE
+$('#complaint-table').innerHTML = D.COMPLAINTS.map((r,i)=>`
   <tr><td style="font-weight:600">${r.cat}</td><td class="mono">${r.pct}%</td>
-  <td style="font-size:12px;color:var(--muted)">${r.src}</td>
   <td><span class="badge ${r.sev==='High'?'b-high':r.sev==='Med'?'b-med':'b-low'}">${r.sev}</span></td>
-  <td style="font-size:12px;color:var(--muted);max-width:320px">${r.signal}</td></tr>`).join('');
+  <td><span class="badge" style="background:${D.ROLE_COLORS[r.topRole]}22;color:${D.ROLE_COLORS[r.topRole]}">${r.topRole}</span></td>
+  <td class="mono">${r.topPct}%</td>
+  <td style="font-size:12px;color:var(--muted);max-width:280px">${r.signal}</td></tr>`).join('');
 
 new Chart($('#complaintBar'),{type:'bar',
-  data:{labels:D.COMPLAINTS.map(r=>r.cat.length>22?r.cat.slice(0,22)+'…':r.cat),
+  data:{labels:D.COMPLAINTS.map(r=>r.cat.length>26?r.cat.slice(0,26)+'…':r.cat),
     datasets:[{data:D.COMPLAINTS.map(r=>r.pct),
-      backgroundColor:D.COMPLAINTS.map(r=>r.sev==='High'?C.neg:r.sev==='Med'?C.warn:C.neu),
+      backgroundColor:D.COMPLAINTS.map(r=>r.sev==='High'?'#CB5346':r.sev==='Med'?'#D4900A':'#D8D1C5'),
       borderRadius:6,borderSkipped:false}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}%`}}},
@@ -1434,26 +1660,28 @@ new Chart($('#complaintPie'),{type:'doughnut',
   options:{responsive:true,maintainAspectRatio:false,cutout:'52%',
     plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:10,padding:8}}}}});
 
-const complaintIcons = ['💸','🤖','📮','🎭','📉'];
+const cIcons = ['💸','📧','🤖','🎭','📊','📉','🤝','💾','🔍','📋'];
 $('#complaint-cards').innerHTML = D.COMPLAINTS.slice(0,5).map((r,i)=>`
   <div class="card stat">
-    <div style="font-size:18px;margin-bottom:8px">${complaintIcons[i]}</div>
-    <div style="font-size:13px;font-weight:700;margin-bottom:6px">${r.cat}</div>
+    <div style="font-size:18px;margin-bottom:8px">${cIcons[i]}</div>
+    <div style="font-size:12.5px;font-weight:700;margin-bottom:6px;line-height:1.3">${r.cat}</div>
     <div class="mono" style="font-size:22px;color:var(--neg);font-weight:700">${r.pct}%</div>
-    <div class="d">${r.signal.slice(0,70)}${r.signal.length>70?'…':''}</div>
+    <div class="d" style="margin-top:5px">Hottest in <b style="color:${D.ROLE_COLORS[r.topRole]}">${r.topRole}</b> (${r.topPct}%)</div>
   </div>`).join('');
 
 // FEATURES
 $('#feature-table').innerHTML = D.FEATURES.map(r=>`
   <tr><td style="font-weight:600">${r.feat}</td><td class="mono">${r.pct}%</td>
-  <td style="font-size:12px;color:var(--muted)">${r.src}</td>
   <td><span class="badge ${r.str==='High'?'b-high':r.str==='Med'?'b-med':'b-low'}">${r.str}</span></td>
   <td><span class="badge ${r.exists==='Yes'?'b-pos':r.exists==='Partial'?'b-med':'b-low'}">${r.exists}</span></td>
+  <td><span class="badge" style="background:${D.ROLE_COLORS[r.topRole]}22;color:${D.ROLE_COLORS[r.topRole]}">${r.topRole}</span></td>
   <td style="font-size:12px;color:var(--muted)">${r.fit}</td></tr>`).join('');
 
 new Chart($('#featureBar'),{type:'bar',
-  data:{labels:D.FEATURES.map(r=>r.feat.length>30?r.feat.slice(0,30)+'…':r.feat),
-    datasets:[{data:D.FEATURES.map(r=>r.pct),backgroundColor:C.blue,borderRadius:6,borderSkipped:false}]},
+  data:{labels:D.FEATURES.map(r=>r.feat.length>32?r.feat.slice(0,32)+'…':r.feat),
+    datasets:[{data:D.FEATURES.map(r=>r.pct),
+      backgroundColor:D.FEATURES.map(r=>r.str==='High'?'#2A66F6':r.str==='Med'?'#2A66F688':'#2A66F644'),
+      borderRadius:6,borderSkipped:false}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}%`}}},
     scales:{x:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
@@ -1461,14 +1689,14 @@ new Chart($('#featureBar'),{type:'bar',
 // OBJECTIONS
 $('#objection-table').innerHTML = D.OBJECTIONS.map(r=>`
   <tr><td style="font-weight:600">${r.obj}</td><td class="mono">${r.pct}%</td>
-  <td style="font-size:12px;color:var(--muted)">${r.src}</td>
+  <td><span class="badge ${r.intensity==='Strong'?'b-high':r.intensity==='Moderate'?'b-med':'b-low'}">${r.intensity}</span></td>
   <td style="font-size:12px;color:var(--muted)">${r.target}</td>
-  <td><span class="badge ${r.intensity==='Strong'?'b-high':r.intensity==='Moderate'?'b-med':'b-low'}">${r.intensity}</span></td></tr>`).join('');
+  <td><span class="badge" style="background:${D.ROLE_COLORS[r.topRole]}22;color:${D.ROLE_COLORS[r.topRole]}">${r.topRole}</span></td></tr>`).join('');
 
 new Chart($('#objectionBar'),{type:'bar',
-  data:{labels:D.OBJECTIONS.map(r=>r.obj.length>28?r.obj.slice(0,28)+'…':r.obj),
+  data:{labels:D.OBJECTIONS.map(r=>r.obj.length>30?r.obj.slice(0,30)+'…':r.obj),
     datasets:[{data:D.OBJECTIONS.map(r=>r.pct),
-      backgroundColor:D.OBJECTIONS.map(r=>r.intensity==='Strong'?C.neg:r.intensity==='Moderate'?C.warn:C.neu),
+      backgroundColor:D.OBJECTIONS.map(r=>r.intensity==='Strong'?'#CB5346':r.intensity==='Moderate'?'#D4900A':'#D8D1C5'),
       borderRadius:6,borderSkipped:false}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}%`}}},
@@ -1480,15 +1708,15 @@ $('#objection-quotes').innerHTML = D.OBJ_QUOTES.map(q=>`
 // PAIN
 $('#pain-table').innerHTML = D.PAIN.map(r=>`
   <tr><td style="font-weight:600">${r.pain}</td><td class="mono">${r.pct}%</td>
-  <td style="font-size:12px;color:var(--muted)">${r.src}</td>
   <td><span class="badge ${r.intensity==='High'?'b-high':'b-med'}">${r.intensity}</span></td>
   <td style="font-size:12px;color:var(--muted)">${r.stage}</td>
+  <td><span class="badge" style="background:${D.ROLE_COLORS[r.topRole]}22;color:${D.ROLE_COLORS[r.topRole]}">${r.topRole}</span></td>
   <td><span class="badge b-pos">${r.opp}</span></td></tr>`).join('');
 
 new Chart($('#painBar'),{type:'bar',
-  data:{labels:D.PAIN.map(r=>r.pain.length>28?r.pain.slice(0,28)+'…':r.pain),
+  data:{labels:D.PAIN.map(r=>r.pain.length>30?r.pain.slice(0,30)+'…':r.pain),
     datasets:[{data:D.PAIN.map(r=>r.pct),
-      backgroundColor:D.PAIN.map(r=>r.intensity==='High'?C.neg:C.warn),
+      backgroundColor:D.PAIN.map(r=>r.intensity==='High'?'#CB5346':'#D4900A'),
       borderRadius:6,borderSkipped:false}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}%`}}},
@@ -1510,147 +1738,82 @@ $('#pain-quotes').innerHTML = D.PAIN_QUOTES.map(q=>`
 $('#gap-table').innerHTML = D.GAPS.map(r=>`
   <tr><td style="font-weight:600">${r.gap}</td>
   <td><span class="badge ${r.strength==='High'?'b-high':'b-med'}">${r.strength}</span></td>
-  <td style="font-size:12px;color:var(--muted)">${r.src}</td>
+  <td style="font-size:12px;color:var(--muted)">${r.roles}</td>
   <td style="font-size:12px;color:var(--muted)">${r.current}</td>
   <td><span class="badge ${r.size==='Large'?'b-high':'b-med'}">${r.size}</span></td>
   <td><span class="badge ${r.priority==='High'?'b-swan':'b-low'}">${r.priority}</span></td></tr>`).join('');
 
-const gapScore = {High:90,Med:55,Low:25};
+const gapScore = {High:90,Med:55};
 new Chart($('#gapBar'),{type:'bar',
-  data:{labels:D.GAPS.map(r=>r.gap.length>40?r.gap.slice(0,40)+'…':r.gap),
+  data:{labels:D.GAPS.map(r=>r.gap.length>42?r.gap.slice(0,42)+'…':r.gap),
     datasets:[{data:D.GAPS.map(r=>gapScore[r.strength]),
-      backgroundColor:D.GAPS.map(r=>r.strength==='High'?C.neg:C.warn),
+      backgroundColor:D.GAPS.map(r=>r.strength==='High'?'#CB5346':'#D4900A'),
       borderRadius:6,borderSkipped:false}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>D.GAPS[ctx.dataIndex].strength+' Signal Strength'}}},
     scales:{x:{display:false},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
 
-// SIGNALS
-const sigMax = Math.max(...D.SIGNALS.map(s=>s.pct));
-$('#signal-list').innerHTML = D.SIGNALS.map(s=>`
-  <div class="sig-row">
-    <div class="sig-icon" style="background:${s.color}22">${s.icon}</div>
-    <div class="sig-label">${s.sig}</div>
-    <div class="sig-bar"><div class="sig-fill" style="width:${s.pct/sigMax*100}%;background:${s.color}"></div></div>
-    <div class="sig-pct mono">${s.pct}%</div>
-  </div>`).join('');
+// ROLE COMPARE CHARTS
+function roleBarChart(id, dataKey, label) {
+  new Chart($(id),{type:'bar',
+    data:{labels:D.ROLE_COMPARISON.labels,
+      datasets:[{data:D.ROLE_COMPARISON[dataKey],backgroundColor:RC,borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y}%`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+}
+roleBarChart('#costByRole','costROI','Cost & ROI Anxiety');
+roleBarChart('#intentByRole','intentSig','Intent Signal Demand');
+roleBarChart('#skepticByRole','aiSkeptic','AI Skepticism');
+roleBarChart('#swanByRole','swanFit','Swan-Relevant Signal');
 
-new Chart($('#jtbdBar'),{type:'bar',
-  data:{labels:D.JTBD.map(r=>r.job.length>28?r.job.slice(0,28)+'…':r.job),
-    datasets:[{data:D.JTBD.map(r=>r.pct),backgroundColor:C.swan+'CC',borderRadius:6,borderSkipped:false}]},
-  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}%`}}},
-    scales:{x:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});
-
-$('#signal-quotes').innerHTML = D.SIG_QUOTES.map(q=>`
-  <div class="qcard"><p>${q.text}</p><div class="src">${q.src}</div></div>`).join('');
-
-// AUDIENCE
-new Chart($('#audienceBar'),{type:'bar',
-  data:{labels:D.AUDIENCE.map(r=>r.aud),
-    datasets:[{data:D.AUDIENCE.map(r=>r.pct),backgroundColor:C.uc,borderRadius:6,borderSkipped:false}]},
-  options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y}%`}}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
-
-new Chart($('#stageDonut'),{type:'doughnut',
-  data:{labels:D.BUYER_STAGE.map(r=>r.stage),
-    datasets:[{data:D.BUYER_STAGE.map(r=>r.pct),backgroundColor:[C.blue,C.warn,C.pos,C.neu],borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
-    plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:10}}}}});
-
-$('#tool-chips').innerHTML = D.TOOL_CHIPS.map(t=>`
-  <span class="chip">${t.name} <span style="opacity:.65">${t.pct}</span></span>`).join('');
-
-const tlMax = D.TOOLS[0].pct;
-$('#tools-list').innerHTML = D.TOOLS.map(r=>`
-  <div class="b">
-    <div class="l">${r.t}</div>
-    <div class="t"><i style="width:${r.pct/tlMax*100}%;background:linear-gradient(90deg,#6A9AFF,#2A66F6)"></i></div>
-    <div class="c">${r.pct}%</div>
-  </div>`).join('');
-
-// SENTIMENT
-const sentSrc = [
-  {lbl:'Post Titles',  d:D.SENTIMENT.titles},
-  {lbl:'Post Bodies',  d:D.SENTIMENT.bodies},
-  {lbl:'Comments',     d:D.SENTIMENT.comments},
-  {lbl:'Overall',      d:D.SENTIMENT.overall},
-];
-$('#sentiment-table').innerHTML = sentSrc.map(r=>{
-  const dom = Object.entries(r.d).sort((a,b)=>b[1]-a[1])[0][0];
-  const lbl = {pos:'Positive',neg:'Negative',neu:'Neutral',mix:'Mixed'}[dom];
-  const cls = {pos:'b-pos',neg:'b-high',neu:'b-low',mix:'b-blue'}[dom];
-  return `<tr><td style="font-weight:600">${r.lbl}</td>
-    <td class="mono" style="color:${C.pos}">${r.d.pos}%</td>
-    <td class="mono" style="color:${C.neg}">${r.d.neg}%</td>
-    <td class="mono">${r.d.neu}%</td>
-    <td class="mono" style="color:${C.blue}">${r.d.mix}%</td>
-    <td><span class="badge ${cls}">${lbl}</span></td></tr>`;
-}).join('');
-
-const sv = D.SENTIMENT.overall;
-new Chart($('#sentimentDonut'),{type:'doughnut',
-  data:{labels:['Positive','Neutral','Mixed','Negative'],
-    datasets:[{data:[sv.pos,sv.neu,sv.mix,sv.neg],backgroundColor:[C.pos,C.neu,C.blue,C.neg],borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
-    plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:10}}}}});
-
-new Chart($('#sentimentGrouped'),{type:'bar',
-  data:{labels:['Titles','Bodies','Comments'],
-    datasets:[
-      {label:'Positive',data:[D.SENTIMENT.titles.pos,D.SENTIMENT.bodies.pos,D.SENTIMENT.comments.pos],backgroundColor:C.pos,borderRadius:4},
-      {label:'Neutral', data:[D.SENTIMENT.titles.neu,D.SENTIMENT.bodies.neu,D.SENTIMENT.comments.neu],backgroundColor:C.neu,borderRadius:4},
-      {label:'Mixed',   data:[D.SENTIMENT.titles.mix,D.SENTIMENT.bodies.mix,D.SENTIMENT.comments.mix],backgroundColor:C.blue,borderRadius:4},
-      {label:'Negative',data:[D.SENTIMENT.titles.neg,D.SENTIMENT.bodies.neg,D.SENTIMENT.comments.neg],backgroundColor:C.neg,borderRadius:4},
-    ]},
+// RADAR
+new Chart($('#radarChart'),{type:'radar',
+  data:{
+    labels:['Cost & ROI','Intent Signals','Data Quality','AI Skepticism','Swan Fit'],
+    datasets:D.ROLE_COMPARISON.labels.map((role,i)=>({
+      label:role,
+      data:[D.ROLE_COMPARISON.costROI[i],D.ROLE_COMPARISON.intentSig[i],D.ROLE_COMPARISON.dataQuality[i],D.ROLE_COMPARISON.aiSkeptic[i],D.ROLE_COMPARISON.swanFit[i]],
+      borderColor:RC[i],backgroundColor:RC[i]+'18',borderWidth:2,pointRadius:3,
+    }))
+  },
   options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:10}}},
-    scales:{x:{grid:{display:false}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+    scales:{r:{grid:{color:'#EBE4D9'},ticks:{display:false},pointLabels:{font:{size:11}}}}}});
 
-const CLABELS = ['Complaint','Feature Request','Objection','Frustration','Positive Feedback','Question / Curiosity','Sharing Own Tool','General Opinion'];
-const CCOLORS = [C.neg,'#9B59B6',C.warn,C.swan,C.pos,C.blue,'#16A085',C.faint];
-const CKEYS   = ['complaint','feature','objection','frustration','positive','question','sharing','opinion'];
-const cOver   = CKEYS.map(k=>Math.round((D.CONTENT_TITLE[k]+D.CONTENT_BODY[k]+D.CONTENT_COMMENT[k])/3*10)/10);
-
-new Chart($('#contentPie'),{type:'doughnut',
-  data:{labels:CLABELS,datasets:[{data:cOver,backgroundColor:CCOLORS,borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
-    plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:10,padding:8}}}}});
-
-new Chart($('#contentStacked'),{type:'bar',
-  data:{labels:['Titles','Bodies','Comments'],
-    datasets:CKEYS.map((k,i)=>({
-      label:CLABELS[i],
-      data:[D.CONTENT_TITLE[k],D.CONTENT_BODY[k],D.CONTENT_COMMENT[k]],
-      backgroundColor:CCOLORS[i],borderRadius:0,
-    }))},
+// TOOLS GROUPED
+const toolNames = ['Clay','HubSpot','Salesforce','LinkedIn','Outreach','Apollo','Claude'];
+const toolColors = ['#2A66F6','#FF7A59','#00A1E0','#0077B5','#5A4FCF','#1E1E2C','#C75B39'];
+const toolDatasets = toolNames.map((tool,i)=>({
+  label:tool,
+  data:D.ROLE_DATA.map(r=>{
+    const role = D.TOOL_MENTIONS[r.role];
+    const found = role.find(t=>t.t===tool);
+    return found?found.p:0;
+  }),
+  backgroundColor:toolColors[i]+'CC',borderRadius:4,borderSkipped:false,
+}));
+new Chart($('#toolsGrouped'),{type:'bar',
+  data:{labels:D.ROLE_DATA.map(r=>r.role),datasets:toolDatasets},
   options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}},
-    scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#EBE4D9'},stacked:true,ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
 
-// TREND
-new Chart($('#trendChart'),{type:'line',
-  data:{labels:D.TREND_MONTHS,
-    datasets:D.TREND_DATASETS.map(d=>({
-      label:d.label,data:d.data,
-      borderColor:d.color,backgroundColor:d.color+'18',
-      tension:.4,borderWidth:2.5,pointRadius:0,fill:false,
-    }))},
-  options:{responsive:true,maintainAspectRatio:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{legend:{position:'top',labels:{usePointStyle:true,boxWidth:7,font:{family:'Inter',size:12}}}},
-    scales:{
-      x:{grid:{display:false},ticks:{maxTicksLimit:10,font:{size:10,family:'JetBrains Mono'},color:C.faint}},
-      y:{grid:{color:'#EBE4D9'},ticks:{font:{size:10,family:'JetBrains Mono'},color:C.faint},beginAtZero:true}
-    }}});
+// TOOL ROLE CARDS
+$('#tool-role-cards').innerHTML = D.ROLE_DATA.map((r,i)=>`
+  <div class="tool-role-card">
+    <h4 style="color:${RC[i]}">${r.role}</h4>
+    ${D.TOOL_MENTIONS[r.role].map(t=>`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="flex:1;font-size:12.5px;font-weight:500">${t.t}</div>
+        <div style="width:80px;height:8px;background:var(--neu-soft);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${Math.min(t.p,100)}%;background:${RC[i]};border-radius:3px"></div>
+        </div>
+        <span class="mono" style="font-size:11px;color:var(--muted);width:28px;text-align:right">${t.p}%</span>
+      </div>`).join('')}
+  </div>`).join('');
 
-new Chart($('#ucEngDonut'),{type:'doughnut',
-  data:{labels:D.UC_DATA.map(r=>r.uc.replace('AI ','').replace('Automated ','')),
-    datasets:[{data:D.UC_DATA.map(r=>r.upvotes),backgroundColor:C.uc,borderWidth:0}]},
-  options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
-    plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:6}}}}});
-
+// SUBREDDITS
 const srMax = D.SUBREDDITS[0].pct;
 $('#subreddit-list').innerHTML = D.SUBREDDITS.map(r=>`
   <div class="b">
@@ -1659,19 +1822,98 @@ $('#subreddit-list').innerHTML = D.SUBREDDITS.map(r=>`
     <div class="c">${r.pct}%</div>
   </div>`).join('');
 
-$('#top-posts-list').innerHTML = D.TOP_POSTS.map(p=>`
+// SENTIMENT DONUT
+const sv = D.SENTIMENT_BY_SRC.overall;
+new Chart($('#sentimentDonut'),{type:'doughnut',
+  data:{labels:['Positive','Neutral','Mixed','Negative'],
+    datasets:[{data:[sv.pos,sv.neu,sv.mix,sv.neg],backgroundColor:['#3F9D6B','#D8D1C5','#2A66F6','#CB5346'],borderWidth:0}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:10}}}}});
+
+new Chart($('#sentimentBySrc'),{type:'bar',
+  data:{labels:['Titles','Bodies','Comments'],
+    datasets:[
+      {label:'Positive',data:[D.SENTIMENT_BY_SRC.titles.pos,D.SENTIMENT_BY_SRC.bodies.pos,D.SENTIMENT_BY_SRC.comments.pos],backgroundColor:'#3F9D6B',borderRadius:4},
+      {label:'Neutral', data:[D.SENTIMENT_BY_SRC.titles.neu,D.SENTIMENT_BY_SRC.bodies.neu,D.SENTIMENT_BY_SRC.comments.neu],backgroundColor:'#D8D1C5',borderRadius:4},
+      {label:'Mixed',   data:[D.SENTIMENT_BY_SRC.titles.mix,D.SENTIMENT_BY_SRC.bodies.mix,D.SENTIMENT_BY_SRC.comments.mix],backgroundColor:'#2A66F6',borderRadius:4},
+      {label:'Negative',data:[D.SENTIMENT_BY_SRC.titles.neg,D.SENTIMENT_BY_SRC.bodies.neg,D.SENTIMENT_BY_SRC.comments.neg],backgroundColor:'#CB5346',borderRadius:4},
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:10,padding:10}}},
+    scales:{x:{grid:{display:false}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+
+new Chart($('#posByRole'),{type:'bar',
+  data:{labels:D.SENTIMENT_BY_ROLE.map(r=>r.role),
+    datasets:[{data:D.SENTIMENT_BY_ROLE.map(r=>r.pos),backgroundColor:RC,borderRadius:6,borderSkipped:false}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y}%`}}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+
+new Chart($('#negByRole'),{type:'bar',
+  data:{labels:D.SENTIMENT_BY_ROLE.map(r=>r.role),
+    datasets:[{data:D.SENTIMENT_BY_ROLE.map(r=>r.neg),backgroundColor:RC.map(c=>'#CB5346'),borderRadius:6,borderSkipped:false}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y}%`}}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#EBE4D9'},ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+
+$('#sentiment-table').innerHTML = D.SENTIMENT_BY_ROLE.map((r,i)=>{
+  const dom = Object.entries({pos:r.pos,neg:r.neg,neu:r.neu,mix:r.mix}).sort((a,b)=>b[1]-a[1])[0][0];
+  const lbl = {pos:'Positive',neg:'Negative',neu:'Neutral',mix:'Mixed'}[dom];
+  const cls = {pos:'b-pos',neg:'b-high',neu:'b-low',mix:'b-blue'}[dom];
+  return `<tr>
+    <td><span class="dot" style="background:${RC[i]};margin-right:7px"></span><b>${r.role}</b></td>
+    <td class="mono" style="color:#3F9D6B">${r.pos}%</td>
+    <td class="mono" style="color:#CB5346">${r.neg}%</td>
+    <td class="mono">${r.neu}%</td>
+    <td class="mono" style="color:#2A66F6">${r.mix}%</td>
+    <td><span class="badge ${cls}">${lbl}</span></td></tr>`;
+}).join('');
+
+// TREND
+new Chart($('#trendChart'),{type:'line',
+  data:{labels:D.TREND_MONTHS,
+    datasets:D.TREND_DATA.map(d=>({
+      label:d.label,data:d.data,
+      borderColor:d.color,backgroundColor:d.color+'18',
+      tension:.4,borderWidth:2.5,pointRadius:0,fill:false,
+    }))},
+  options:{responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{legend:{position:'top',labels:{usePointStyle:true,boxWidth:7,font:{family:'Inter',size:12}}}},
+    scales:{
+      x:{grid:{display:false},ticks:{maxTicksLimit:10,font:{size:10,family:'JetBrains Mono'},color:'#B5AC9E'}},
+      y:{grid:{color:'#EBE4D9'},ticks:{font:{size:10,family:'JetBrains Mono'},color:'#B5AC9E'},beginAtZero:true}
+    }}});
+
+// TOP POSTS
+$('#top-posts-list').innerHTML = D.TOP_POSTS.map((p,i)=>`
   <div class="post-item">
     <div class="post-title">${p.title}</div>
     <div class="post-meta">
-      <span class="mono" style="font-size:11.5px;color:var(--swan)">▲ ${fmt(p.up)}</span>
-      <span class="badge b-low">${p.uc}</span>
+      <span class="mono" style="font-size:11.5px;color:var(--swan)">&#9650; ${fmt(p.up)}</span>
+      <span class="badge" style="background:${D.ROLE_COLORS[p.role]}22;color:${D.ROLE_COLORS[p.role]}">${p.role}</span>
     </div>
   </div>`).join('');
 
+// CONTENT STACKED
+const CLABELS = ['Complaint','Feature Request','Objection','Sharing Own Work','Positive Feedback','Question / Curiosity','General Opinion'];
+const CCOLORS = ['#CB5346','#9B59B6','#D4900A','#16A085','#3F9D6B','#2A66F6','#B5AC9E'];
+const CKEYS   = ['complaint','feature','objection','sharing','positive','question','opinion'];
+new Chart($('#contentStacked'),{type:'bar',
+  data:{labels:['Titles','Bodies','Comments'],
+    datasets:CKEYS.map((k,i)=>({
+      label:CLABELS[i],
+      data:[D.CONTENT_DIST.title[k],D.CONTENT_DIST.body[k],D.CONTENT_DIST.comment[k]],
+      backgroundColor:CCOLORS[i],borderRadius:0,
+    }))},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:10,padding:8}}},
+    scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#EBE4D9'},stacked:true,ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'}}}}}});
+
 // VERDICTS
-const vBg   = ['#F6E2DF','#F6E2DF','#FBF1EB','#FDF3DC','#E8EFFF','#E3F1E9'];
-const vBord = [C.neg,C.neg,C.swan,C.warn,C.blue,C.pos];
-const vIcons = ['🔑','💰','📡','🛡','🎯','🔧'];
+const vBg   = ['#E8EFFF','#F6E2DF','#FBF1EB','#F6E2DF','#E3F1E9','#FBF1EB'];
+const vBord = ['#2A66F6','#CB5346','#C75B39','#CB5346','#3F9D6B','#C75B39'];
+const vIcons = ['🎯','💰','🤝','🔌','📡','📚'];
 $('#verdict-cards').innerHTML = D.VERDICTS.map((v,i)=>`
   <div class="vcard" style="background:${vBg[i]};border-color:${vBord[i]}33">
     <div class="vicon" style="background:${vBord[i]}22">${vIcons[i]}</div>
@@ -1688,9 +1930,7 @@ $('#verdict-table').innerHTML = D.VERDICTS.map(r=>`
 const secs=[...document.querySelectorAll('section')];
 const navlinks=[...document.querySelectorAll('#nav a')];
 const obs=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting){navlinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}
-  });
+  es.forEach(e=>{if(e.isIntersecting){navlinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}});
 },{rootMargin:'-45% 0px -50% 0px'});
 secs.forEach(s=>obs.observe(s));
 
