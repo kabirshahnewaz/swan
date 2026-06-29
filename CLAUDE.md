@@ -21,7 +21,7 @@ All files use a consistent `swan_<topic>.html` lowercase snake_case naming conve
 - `swan_top_posts_report.html` — top Reddit posts.
 - `swan_reddit_roadmap.html` — go-to-market roadmap (no charts).
 
-Every file's header contains a shared **"All Reports ▾" dropdown** (a `.rnav` native `<details>` element, no JS) linking to all 8 pages, with the current page marked via `aria-current="page"`. Its CSS is appended to each file's `<style>` block and uses only tokens present in all files (radius is hardcoded; swan tint uses a `var(--swan-tint, var(--swan-t, #FBF1EB))` fallback chain). This is separate from each report's in-page section `<nav id="nav">` / `<nav id="mainnav">`, which links to anchors within that page.
+Every file's header contains a shared **inline report menu** (`<nav class="rnav">`, a flex-wrap row of links, no JS) linking to all 8 pages, with the current page marked via `aria-current="page"`. Its CSS is appended to each file's `<style>` block and uses only tokens present in all files (radius is hardcoded; swan tint uses a `var(--swan-tint, var(--swan-t, #FBF1EB))` fallback chain). This is separate from each report's in-page section `<nav id="nav">` / `<nav id="mainnav">`, which links to anchors within that page.
 
 ## Architecture / conventions
 
